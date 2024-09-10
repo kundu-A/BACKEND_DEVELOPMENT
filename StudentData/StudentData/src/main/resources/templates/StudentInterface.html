@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Student Information</title>
+    <style>
+        body {
+            background-color: black;
+            background-size: 100% 100%;
+            background-repeat: no-repeat;
+            background-attachment: fixed;
+        }
+        td, tr {
+            color: white;
+        }
+    </style>
+</head>
+<body>
+    <table width="100%" height="100%">
+        <tr>
+            <td align="center" valign="middle">
+                <form action="#" method="post" th:action="@{/information}" th:object="${studentItem}"  enctype="multipart/form-data">
+                    <table>
+                        <tr>
+                            <td colspan="2" align="center">
+                                <h1 style="color: red"><b>Student Information Form</b></h1>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td><label for="fname" style="font-size: 20px;"><b>First Name:</b></label></td>
+                            <td><input th:field="*{firstName}" type="text" placeholder="Enter your First Name" style="font-size: 15px;"></td>
+                            <td>
+                            	<span th:errors="*{firstName}"></span>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td><label for="lname" style="font-size: 20px;"><b>Last Name:</b></label></td>
+                            <td><input th:field="*{lastName}" type="text" placeholder="Enter your Last Name" style="font-size: 15px;"></td>
+                        	<td>
+                            	<span th:errors="*{lastName}"></span>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td><label for="dob" style="font-size: 20px;"><b>Date of Birth:</b></label></td>
+                            <td><input th:field="*{dob}" type="date" style="font-size: 15px;"></td>
+                        	<td>
+                            	<span th:errors="*{dob}"></span>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td><label for="mail" style="font-size: 20px;"><b>Email Id:</b></label></td>
+                            <td><input th:field="*{email}" type="email" placeholder="Enter your Email Id" style="font-size: 15px;"></td>
+                        	<td>
+                            	<span th:errors="*{email}"></span>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td><label for="rollno" style="font-size: 20px;"><b>Roll Number:</b></label></td>
+                            <td><input th:field="*{rollNo}" type="text" placeholder="Enter your Roll No" style="font-size: 15px;"></td>
+                        	<td>
+                            	<span th:errors="*{rollNo}"></span>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td><label for="regno" style="font-size: 20px;"><b>Registration Number:</b></label></td>
+                            <td><input th:field="*{regNo}" type="text" placeholder="Enter your Registration No" style="font-size: 15px;"></td>
+                        	<td>
+                            	<span th:errors="*{regNo}"></span>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td><label for="collegeName" style="font-size: 20px;"><b>College Name:</b></label></td>
+                            <td><input th:field="*{collegeName}" type="text" placeholder="Enter your College Name" style="font-size: 15px;"></td>
+                        	<td>
+                            	<span th:errors="*{collegeName}"></span>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td><label for="stream" style="font-size: 20px;"><b>Choose your Stream:</b></label></td>
+                            <td>
+                                <select th:field="*{stream}" id="stream" style="font-size: 15px;">
+                                    <option value="CSE">CSE</option>
+                                    <option value="ME">ME</option>
+                                    <option value="EE">EE</option>
+                                    <option value="EEE">EEE</option>
+                                </select>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td><label for="form" style="font-size: 20px;"><b>Put your Resume here:</b></label></td>
+                            <td><input name="file" type="file" style="font-size: 15px;"></td>
+                        </tr>
+                        <tr>
+                            <td colspan="2" align="center">
+                                <a th:href="@{/information}">
+                                <button type="submit" style="font-size: large;"></a>Submit</button>
+                            </td>
+                        </tr>
+                          <tr>
+                            <td colspan="2" align="right" style="padding-top: 10px;">
+                                <a th:href="@{/details}">
+                                    <button type="button" style="font-size: large;">Show Student List</button>
+                                </a>
+                            </td>
+                        </tr>
+                    </table>
+                </form>
+            </td>
+        </tr>
+    </table>
+</body>
+</html>

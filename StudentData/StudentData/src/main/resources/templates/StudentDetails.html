@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Student List</title>
+    <style>
+    body{
+    	background-color: black;
+    }
+        td{
+            border: 1px solid white;
+            border-radius: 20px;
+            text-align: center;
+            color:white;
+        }
+        th{
+        	border: 1px solid white;
+            border-radius: 20px;
+            text-align: center;
+            color:red;
+        }
+    </style>
+</head>
+<body>
+	<div align="left" style="margin-top: 20px;">
+        <a href="#" th:href="@{/information}">
+        <button type="button" style="font-size: large;">Back to the Form</button>
+        </a>
+    </div>
+    <table style="width: 100%;">
+        <tr>
+            <th>First Name</th>
+            <th>Last Name</th>
+            <th>Date of Birth</th>
+            <th>Email Address</th>
+            <th>Roll Number</th>
+            <th>Registration Number</th>
+            <th>College Name</th>
+            <th>Stream</th>
+            <th>Download Details</th>
+            <th>Download Resume</th>
+        </tr>
+        <tr th:each="studentrow : ${students}">
+            <td th:text="${studentrow.firstName}"></td>
+            <td th:text="${studentrow.lastName}"></td>
+            <td th:text="${studentrow.dob}"></td>
+            <td th:text="${studentrow.email}"></td>
+            <td th:text="${studentrow.rollNo}"></td>
+            <td th:text="${studentrow.regNo}"></td>
+            <td th:text="${studentrow.collegeName}"></td>
+            <td th:text="${studentrow.stream}"></td>
+            <td><a href="#" th:href="@{/generatepdf(id=${studentrow.id})}">Download</a></td>
+            <td><a href="#" th:href="@{/downloadpdf/{id}(id=${studentrow.id})}">Download</a></td>
+        </tr>
+    </table>
+</body>
+</html>

@@ -1,4 +1,4 @@
-package com.arpankundu.QuizeApp.models;
+package com.arpankundu.QuizApp.models;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;

@@ -1,4 +1,4 @@
-package com.arpankundu.QuizeApp.services;
+package com.arpankundu.QuizApp.services;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -9,8 +9,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
-import com.arpankundu.QuizeApp.models.Questions;
-import com.arpankundu.QuizeApp.repository.QuestionRepo;
+import com.arpankundu.QuizApp.models.Questions;
+import com.arpankundu.QuizApp.repository.QuestionRepo;
 
 import jakarta.transaction.Transactional;
 

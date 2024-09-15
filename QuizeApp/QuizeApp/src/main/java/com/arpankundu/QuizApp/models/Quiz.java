@@ -1,4 +1,4 @@
-package com.arpankundu.QuizeApp.models;
+package com.arpankundu.QuizApp.models;
 
 import java.util.List;
 
@@ -11,17 +11,17 @@ import jakarta.persistence.ManyToMany;
 import jakarta.persistence.Table;
 
 @Entity
-@Table(name="Quize_Set")
-public class Quize {
+@Table(name="Quiz_Set")
+public class Quiz {
 
 	@Id
 	@GeneratedValue(strategy=GenerationType.IDENTITY)
-	@Column(name="Quize_Id")
+	@Column(name="Quiz_Id")
 	private Integer id;
-	@Column(name="Quize_Title")
+	@Column(name="Quiz_Title")
 	private String title;
 	@ManyToMany
-	@Column(name="Quize_List")
+	@Column(name="Quiz_List")
 	private List<Questions> questions;
 	public Integer getId() {
 		return id;

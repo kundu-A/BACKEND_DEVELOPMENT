@@ -1,4 +1,4 @@
-package com.arpankundu.QuizeApp.services;
+package com.arpankundu.QuizApp.services;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -9,18 +9,18 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
-import com.arpankundu.QuizeApp.models.QuestionWrapper;
-import com.arpankundu.QuizeApp.models.Questions;
-import com.arpankundu.QuizeApp.models.Quize;
-import com.arpankundu.QuizeApp.models.Responses;
-import com.arpankundu.QuizeApp.repository.QuestionRepo;
-import com.arpankundu.QuizeApp.repository.QuizeRepo;
+import com.arpankundu.QuizApp.models.QuestionWrapper;
+import com.arpankundu.QuizApp.models.Questions;
+import com.arpankundu.QuizApp.models.Quiz;
+import com.arpankundu.QuizApp.models.Responses;
+import com.arpankundu.QuizApp.repository.QuestionRepo;
+import com.arpankundu.QuizApp.repository.QuizRepo;
 
 @Service
-public class QuizeService {
+public class QuizService {
 
 	@Autowired
-	QuizeRepo quizeRepo;
+	QuizRepo quizeRepo;
 	
 	@Autowired
 	QuestionRepo questionRepo;
@@ -28,7 +28,7 @@ public class QuizeService {
 	public ResponseEntity<String> createQuize(String catagory , int numQ , String title){
 		List<Questions> question = questionRepo.findRandomQuestionsByCatagory(catagory,numQ);
 		
-		Quize quize = new Quize();
+		Quiz quize = new Quiz();
 		quize.setTitle(title);
 		quize.setQuestions(question);
 		quizeRepo.save(quize);
@@ -38,7 +38,7 @@ public class QuizeService {
 	}
 
 	public ResponseEntity<List<QuestionWrapper>> getQuizeQuestions(Integer id) {
-		Optional<Quize> quize = quizeRepo.findById(id);
+		Optional<Quiz> quize = quizeRepo.findById(id);
 		List<Questions> questionFromDB=quize.get().getQuestions();
 		List<QuestionWrapper> questionForUser = new ArrayList<>();
 		for(Questions q : questionFromDB) {
@@ -50,7 +50,7 @@ public class QuizeService {
 	}
 
 	public ResponseEntity<Integer> calculateResponses(Integer id, List<Responses> responses) {
-		Quize quize = quizeRepo.findById(id).get();
+		Quiz quize = quizeRepo.findById(id).get();
 		List<Questions> questions = quize.getQuestions();
 		int count=0 ,i=0;
 		for(Responses response : responses ) {

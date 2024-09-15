@@ -1,4 +1,4 @@
-package com.arpankundu.QuizeApp.controllers;
+package com.arpankundu.QuizApp.controllers;
 
 import java.util.List;
 import java.util.Optional;
@@ -14,8 +14,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.arpankundu.QuizeApp.models.Questions;
-import com.arpankundu.QuizeApp.services.QuestionService;
+import com.arpankundu.QuizApp.models.Questions;
+import com.arpankundu.QuizApp.services.QuestionService;
 
 @RestController
 @RequestMapping("/questions")

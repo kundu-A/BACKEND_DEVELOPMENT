@@ -1,4 +1,4 @@
-package com.arpankundu.QuizeApp.controllers;
+package com.arpankundu.QuizApp.controllers;
 
 import java.util.List;
 
@@ -12,16 +12,16 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.arpankundu.QuizeApp.models.QuestionWrapper;
-import com.arpankundu.QuizeApp.models.Responses;
-import com.arpankundu.QuizeApp.services.QuizeService;
+import com.arpankundu.QuizApp.models.QuestionWrapper;
+import com.arpankundu.QuizApp.models.Responses;
+import com.arpankundu.QuizApp.services.QuizService;
 
 @RestController
-@RequestMapping("/quize")
-public class QuizeController {
+@RequestMapping("/quiz")
+public class QuizController {
 
 	@Autowired
-	QuizeService quizeService;
+	QuizService quizeService;
 	
 	@PostMapping("/create")
 	public ResponseEntity<String> createQuize(@RequestParam String catagory ,@RequestParam int numQ, @RequestParam String title){

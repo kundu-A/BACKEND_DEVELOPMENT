@@ -6,22 +6,30 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
+import jakarta.validation.constraints.NotBlank;
 
 @Entity
 @Table(name="Jobs_List")
 public class JobPost {
 
 	@Id
-	@GeneratedValue(strategy=GenerationType.AUTO)
+	@GeneratedValue(strategy=GenerationType.SEQUENCE)
 	@Column(name="Job_Id")
 	private Integer id;
+	
 	@Column(name="Job_Profile")
+	@NotBlank(message="Job Profile should be filled")
 	private String profile;
+	
 	@Column(name="Job_Description")
+	@NotBlank(message="Job Description should be filled")
 	private String description;
+	
 	@Column(name="Experience")
 	private float experience;
+	
 	@Column(name="Required_Technologies")
+	@NotBlank(message="Technologies are must!!!")
 	private String technologies;
 	public JobPost() {
 		super();

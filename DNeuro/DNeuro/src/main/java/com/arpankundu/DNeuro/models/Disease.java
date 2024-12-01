@@ -5,6 +5,7 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
+import jakarta.validation.constraints.NotBlank;
 
 @Entity
 @Table(name="Disease_List")
@@ -13,10 +14,15 @@ public class Disease {
 	@Id
 	@GeneratedValue(strategy=GenerationType.IDENTITY)
 	private Integer id;
+	@NotBlank(message="Disease Name can't be null")
 	private String diseaseName;
+	@NotBlank(message="Exising Drug can't be null")
 	private String existingDrugs;
+	@NotBlank(message="New Drugs can't be null")
 	private String newDurgs;
+	@NotBlank(message="Treatment can't be null")
 	private String treatment;
+	@NotBlank(message="New Advances can't be null")
 	private String newAdvances;
 	public Integer getId() {
 		return id;

@@ -1,6 +1,7 @@
 package com.arpankundu.DNeuro.services;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -26,8 +27,24 @@ public class DiseaseServices {
 		return diseaseRepo.save(disease);
 	}
 
+	@Transactional
 	public List<Disease> getDiseaseDetails() {
 		return diseaseRepo.findAll();
+	}
+
+	@Transactional
+	public Optional<Disease> getOneDisease(Integer id) {
+		return diseaseRepo.findById(id);
+	}
+	
+	@Transactional
+	public List<String> getDiseaseName() {
+		return diseaseRepo.findByname();
+	}
+
+	@Transactional
+	public List<Disease> searchEngine(String text) {
+		return diseaseRepo.findByText(text);
 	}
 
 }

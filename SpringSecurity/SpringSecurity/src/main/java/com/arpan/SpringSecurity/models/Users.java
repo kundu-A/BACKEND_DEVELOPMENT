@@ -10,6 +10,13 @@ public class Users {
 	private Integer id;
 	private String username;
 	private String passcode;
+	private String role="ROLE_USER";
+	public String getRole() {
+		return role;
+	}
+	public void setRole(String role) {
+		this.role = role;
+	}
 	public Integer getId() {
 		return id;
 	}

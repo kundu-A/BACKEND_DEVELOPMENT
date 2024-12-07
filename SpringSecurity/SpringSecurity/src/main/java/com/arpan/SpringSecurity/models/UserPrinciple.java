@@ -2,6 +2,7 @@ package com.arpan.SpringSecurity.models;
 
 import java.util.Collection;
 import java.util.Collections;
+import java.util.List;
 
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -17,7 +18,7 @@ public class UserPrinciple implements UserDetails{
 
 	@Override
 	public Collection<? extends GrantedAuthority> getAuthorities() {
-		return Collections.singleton(new SimpleGrantedAuthority("USER"));
+		return List.of(new SimpleGrantedAuthority(user.getRole()));
 	}
 
 	@Override
@@ -30,6 +31,7 @@ public class UserPrinciple implements UserDetails{
 		return user.getUsername();
 	}
 	
+	@Override
 	public boolean isAccountNonLocked() {
 		return true;
 	}

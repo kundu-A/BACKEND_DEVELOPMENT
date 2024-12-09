@@ -44,6 +44,7 @@ public class SecurityConfig {
 		//.requestMatchers("/student/**").hasRole("USER")
 		.anyRequest().authenticated())
 		.httpBasic(Customizer.withDefaults())
+		.oauth2Login(Customizer.withDefaults())
 		//.formLogin(Customizer.withDefaults())
 		.sessionManagement(session->session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
 		.addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class)

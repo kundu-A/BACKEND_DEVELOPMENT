@@ -18,4 +18,7 @@ public interface DiseaseRepo extends JpaRepository<Disease, Integer>{
 	@Query(value = "SELECT * FROM disease_list d WHERE d.disease_name LIKE %:text% OR d.existing_drugs LIKE %:text% OR d.new_durgs LIKE %:text OR d.new_advances LIKE %:text% OR d.treatment LIKE %:text%" , nativeQuery=true)
 	List<Disease> findByText(@Param(value = "text") String text);
 
+	@Query(value="SELECT * FROM disease_list d WHERE d.disease_name LIKE :text%",nativeQuery=true)
+	List<Disease> findByAlphabate(@Param(value="text")String text);
+
 }

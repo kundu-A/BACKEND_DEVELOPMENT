@@ -47,10 +47,10 @@ public class DiseaseControllers {
 	public ResponseEntity<?> getDiseaseDetails(){
 		try {
 			List<Disease> result=diseaseService.getDiseaseDetails();
-			if(result!=null){
-				return new ResponseEntity<>(result,HttpStatus.OK);
-			}else {
+			if(result.isEmpty()){
 				return new ResponseEntity<>("May be no record present in the database or somthing else!!",HttpStatus.BAD_REQUEST);
+			}else {
+				return new ResponseEntity<>(result,HttpStatus.OK);
 			}
 		}catch(Exception e) {
 			return new ResponseEntity<>("Somthing problem is happing internally!!",HttpStatus.INTERNAL_SERVER_ERROR);
@@ -61,8 +61,8 @@ public class DiseaseControllers {
 	public ResponseEntity<?> getOneDisease(@PathVariable Integer id){
 		try {
 			Optional<Disease> result = diseaseService.getOneDisease(id);
-			if(result!=null) {
-				return new ResponseEntity<>(result,HttpStatus.OK);
+			if(result.isPresent()) {
+				return new ResponseEntity<>(result.get(),HttpStatus.OK);
 			}else {
 				return new ResponseEntity<>("May be no record present in the database or something else!!" , HttpStatus.BAD_REQUEST);
 			}
@@ -75,10 +75,10 @@ public class DiseaseControllers {
 	public ResponseEntity<?> getDiseaseName(){
 		try {
 			List<String> result = diseaseService.getDiseaseName();
-			if(result!=null) {
-				return new ResponseEntity<>(result,HttpStatus.OK);
-			}else {
+			if(result.isEmpty()) {
 				return new ResponseEntity<>("May be on records present in the database or something else!!",HttpStatus.BAD_REQUEST);
+			}else {
+				return new ResponseEntity<>(result,HttpStatus.OK);
 			}
 		}catch(Exception e) {
 			return new ResponseEntity<>("Somthing problem is happing internally!!",HttpStatus.INTERNAL_SERVER_ERROR);
@@ -89,13 +89,26 @@ public class DiseaseControllers {
 	public ResponseEntity<?> searchEngine(@PathVariable String text){
 		try {
 			List<Disease> result = diseaseService.searchEngine(text);
-			if(result!=null) {
-				return new ResponseEntity<>(result,HttpStatus.OK);
+			if(result.isEmpty()) {
+				return new ResponseEntity<>("No record find related to this searched items!!" , HttpStatus.BAD_REQUEST);	
 			}else {
-				return new ResponseEntity<>("No record find related to this searched items!!" , HttpStatus.BAD_REQUEST);
+				return new ResponseEntity<>(result,HttpStatus.OK);
 			}
 		}catch(Exception e) {
 			return new ResponseEntity<>("Somthing problem is happing internally!!", HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+	}
+	@GetMapping("/searchByAlphabate/{text}")
+	public ResponseEntity<?> searchByAlphabate(@PathVariable String text){
+		try {
+			List<Disease> result=diseaseService.searchByAlphabate(text);
+			if(result.isEmpty()) {
+				return new ResponseEntity<>("No result found which starts with "+text+"!!",HttpStatus.BAD_REQUEST);
+			}else {
+				return new ResponseEntity<>(result,HttpStatus.OK);
+			}
+		}catch(Exception e) {
+			return new ResponseEntity<>("Something Problem is happing internally!!",HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 	}
 }

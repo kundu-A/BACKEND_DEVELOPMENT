@@ -47,4 +47,9 @@ public class DiseaseServices {
 		return diseaseRepo.findByText(text);
 	}
 
+	@Transactional
+	public List<Disease> searchByAlphabate(String text) {
+		return diseaseRepo.findByAlphabate(text);
+	}
+
 }

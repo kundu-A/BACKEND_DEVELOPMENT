@@ -1,8 +1,9 @@
 package com.arpankundu.journalApp.controllers;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.util.List;
+import java.util.Optional;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -15,38 +16,86 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.arpankundu.journalApp.models.JournalEntry;
+import com.arpankundu.journalApp.services.JournalServices;
 
 @RestController
 @RequestMapping("/journal")
 public class JournalEntryPoint {
 
-	private Map<Long, JournalEntry> journalEntries=new HashMap<>();
+	@Autowired
+	private JournalServices journalServices;
 	
-	@GetMapping("/getAll")
+	//Get All Records : http:8080/journal/get
+	@GetMapping("/get")
 	public ResponseEntity<?> getEntry(){
-		return new ResponseEntity<>(journalEntries.values(),HttpStatus.OK);
+		try {
+			List<JournalEntry> entries=journalServices.getEntry();
+		if(!entries.isEmpty())
+			return new ResponseEntity<>(entries,HttpStatus.OK);
+		else
+			return new ResponseEntity<>("No Record Found!!",HttpStatus.NOT_FOUND);
+		}catch(Exception e) {
+			System.out.println(e.getMessage());
+			return new ResponseEntity<>("Sorry ,for not helping you :)!!",HttpStatus.INTERNAL_SERVER_ERROR);
+		}
 	}
 	
-	@PostMapping("/setAll")
+	//Set A Record : http:8080/journal/set
+	@PostMapping("/set")
 	public ResponseEntity<?> createEntry(@RequestBody JournalEntry journalEntry){
-		journalEntries.put(journalEntry.getId(), journalEntry);
-		return new ResponseEntity<>("A new Journal Entry is created successfully!!",HttpStatus.CREATED);
+		try {
+			boolean check=journalServices.createEntry(journalEntry);
+			if(check==true)
+				return new ResponseEntity<>("Record is added successfully!!",HttpStatus.CREATED);
+			else
+				return new ResponseEntity<>("Something went wrong!!",HttpStatus.BAD_REQUEST);
+		}catch(Exception e) {
+			System.out.println(e.getMessage());
+			return new ResponseEntity<>("Sorry ,for not helping you :)!!",HttpStatus.INTERNAL_SERVER_ERROR);
+		}
 	}
 	
+	//Get A Record By Id : http:8080/journal/get/1
 	@GetMapping("/get/{id}")
-	public ResponseEntity<?> getEntryById(@PathVariable Long id){
-		return new ResponseEntity<>(journalEntries.get(id),HttpStatus.OK);
+	public ResponseEntity<?> getEntryById(@PathVariable Integer id){
+		try {
+			Optional<JournalEntry> elementById=journalServices.getEntryById(id);
+			if(elementById.isPresent())
+				return new ResponseEntity<>(elementById,HttpStatus.OK);
+			else
+				return new ResponseEntity<>("No Record Found!!",HttpStatus.NOT_FOUND);
+		}catch(Exception e) {
+			System.out.println(e.getMessage());
+			return new ResponseEntity<>("Sorry ,for not helping you :)!!",HttpStatus.INTERNAL_SERVER_ERROR);
+		}
 	}
 	
+	//Delete A Record By Id : http:8080/journal/delete/1
 	@DeleteMapping("/delete/{id}")
-	public ResponseEntity<?> deleteById(@PathVariable Long id){
-		journalEntries.remove(id);
-		return new ResponseEntity<>("Id no. "+id+" deleted successfully!!",HttpStatus.OK);
+	public ResponseEntity<?> deleteById(@PathVariable Integer id){
+		try {
+			boolean isDeleted=journalServices.deleteById(id);
+			if(isDeleted==true)
+				return new ResponseEntity<>("The Item is deleted successfully!!",HttpStatus.OK);
+			else
+				return new ResponseEntity<>("No Record Found/Something Went Wrong!!",HttpStatus.NOT_FOUND);
+		}catch(Exception e) {
+			return new ResponseEntity<>("Sorry ,for not helping you :)!!",HttpStatus.OK);
+		}
 	}
+	
+	//Get Update Record By Id : http:8080/journal/update/1
 	@PutMapping("/update/{id}")
-	public ResponseEntity<?> updateById(@PathVariable Long id , @RequestBody JournalEntry journalEntry){
-		journalEntries.put(id, journalEntry);
-		return new ResponseEntity<>("Id no. "+id+" updated successfully!!",HttpStatus.CREATED);
+	public ResponseEntity<?> updateById(@PathVariable Integer id , @RequestBody JournalEntry journalEntry){
+		try {
+			boolean elementById=journalServices.updateEntryById(id,journalEntry);
+			if(elementById==true)
+				return new ResponseEntity<>("The Record updated successfully!!",HttpStatus.CREATED);
+			else
+				return new ResponseEntity<>("No Record Found/Something Went Wrong!!",HttpStatus.BAD_REQUEST);
+		}catch(Exception e) {
+			return new ResponseEntity<>("Sorry ,for not helping you :)!!",HttpStatus.INTERNAL_SERVER_ERROR);
+		}
 	}
 }
 

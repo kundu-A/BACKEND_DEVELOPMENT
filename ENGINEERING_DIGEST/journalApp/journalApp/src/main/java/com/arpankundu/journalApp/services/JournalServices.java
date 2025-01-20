@@ -25,8 +25,11 @@ public class JournalServices {
 	@Transactional
 	public boolean createEntry(JournalEntry journalEntry) {
 		try {
-			journalAppRepo.save(journalEntry);
-			return true;
+			JournalEntry j=journalAppRepo.save(journalEntry);
+			if(j!=null)
+				return true;
+			else
+				return false;
 		}catch(Exception e) {
 			System.out.println(e.getMessage());
 			return false;
@@ -54,8 +57,11 @@ public class JournalServices {
 			element.setContent(journalEntry.getContent());
 			element.setTitle(journalEntry.getTitle());
 			try {
-				journalAppRepo.save(element);
-				return true;
+				JournalEntry j=journalAppRepo.save(element);
+				if(j!=null)
+					return true;
+				else
+					return false;
 			}catch(Exception e) {
 				System.out.println(e.getMessage());
 				return false;

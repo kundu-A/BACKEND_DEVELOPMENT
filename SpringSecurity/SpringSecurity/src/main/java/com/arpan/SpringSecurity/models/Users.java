@@ -1,16 +1,39 @@
 package com.arpan.SpringSecurity.models;
 
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.Table;
 
 @Entity
+@Table(name="users")
 public class Users {
 
 	@Id
+	@GeneratedValue(strategy=GenerationType.AUTO)
+	@Column(name="user_id")
 	private Integer id;
+	
+	@Column(name="username")
 	private String username;
+	
+	@Column(name="user_password")
 	private String passcode;
-	private String role="ROLE_USER";
+	
+	@Column(name="user_role")
+	private String role;
+	
+	@Column(name="user_name")
+	private String name;
+	
+	public String getName() {
+		return name;
+	}
+	public void setName(String name) {
+		this.name = name;
+	}
 	public String getRole() {
 		return role;
 	}

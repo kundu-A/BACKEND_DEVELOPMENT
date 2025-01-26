@@ -10,12 +10,14 @@ import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.NoOpPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
@@ -37,52 +39,30 @@ public class SecurityConfig {
 	public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
 		//This is called builder approach.
 		return http
-		.csrf(customizer->customizer.disable())
+		.csrf(AbstractHttpConfigurer::disable)
 		.authorizeHttpRequests(request->request
 		.requestMatchers("register","login")
 		.permitAll()
-		//.requestMatchers("/student/**").hasRole("USER")
 		.anyRequest().authenticated())
 		.httpBasic(Customizer.withDefaults())
 		.oauth2Login(Customizer.withDefaults())
-		//.formLogin(Customizer.withDefaults())
 		.sessionManagement(session->session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
 		.addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class)
 		.build();
-		/*
-		 * Customizer<CsrfConfigurer<HttpSecuity>> custCsrf=new Customizer<CsrfConfigurer<HttpSecuity>>(){
-		 * @Override
-		 * public void customize(CsrfConfigurer<HttpSecurity> customizer){
-		 * 		customizer.disbale();
-		 * }
-		 * };
-		 * http.csrf(custCsrf);
-		 */
 	}
 	@Bean
 	public AuthenticationProvider authenticationProvider() {
 		DaoAuthenticationProvider provider=new DaoAuthenticationProvider();
-		provider.setPasswordEncoder(new BCryptPasswordEncoder(12));
+		provider.setPasswordEncoder(passwordEncoder());
 		provider.setUserDetailsService(myUserDetailsService);
 		return provider;
+	}
+	@Bean
+	public PasswordEncoder passwordEncoder() {
+		return new BCryptPasswordEncoder(12);
 	}
 	@Bean
 	public AuthenticationManager authenticationManager(AuthenticationConfiguration config) throws Exception {
 		return config.getAuthenticationManager();
 	}
-	
-	/*
-	 * We are going to use this because here is also we are using hardcode values for username and password.
-	 * But in normal case we are going to do this.
-	 * 
-	 * @Bean 
-	 * public UserDetailsService userDetailsService() {
-	 * 
-	 * UserDetails user1= User .withDefaultPasswordEncoder() .username("Goutam")
-	 * .password("G@123") .roles("USER") .build(); UserDetails user2= User
-	 * .withDefaultPasswordEncoder() .username("Manojit") .password("M@123")
-	 * .roles("ADMIN") .build();
-	 * 
-	 * return new InMemoryUserDetailsManager(user1 ,user2); }
-	 */
 }

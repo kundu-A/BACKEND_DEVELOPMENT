@@ -33,7 +33,7 @@ public class UserController {
 	    public ResponseEntity<?> register(@RequestBody @Valid Users user) {
 	        try {
 	            String username = utilityService.extractUsernameFromEmail(user);
-	            if (userRepo.findByUsername(username)==null)
+	            if (userRepo.findUserByUsername(username)==null)
 	                return new ResponseEntity<>(userService.register(user), HttpStatus.CREATED);
 	            return new ResponseEntity<>("User already exist",HttpStatus.BAD_REQUEST);
 	        } catch (Exception e) {

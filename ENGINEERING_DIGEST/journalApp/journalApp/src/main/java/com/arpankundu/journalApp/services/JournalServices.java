@@ -25,11 +25,8 @@ public class JournalServices {
 	@Transactional
 	public boolean createEntry(JournalEntry journalEntry) {
 		try {
-			JournalEntry j=journalAppRepo.save(journalEntry);
-			if(j!=null)
-				return true;
-			else
-				return false;
+			journalAppRepo.save(journalEntry);
+			return true;
 		}catch(Exception e) {
 			System.out.println(e.getMessage());
 			return false;
@@ -51,6 +48,7 @@ public class JournalServices {
 		}
 	}
 
+	@Transactional
 	public boolean updateEntryById(Integer id, JournalEntry journalEntry) {
 		JournalEntry element=journalAppRepo.findById(id).get();
 		if(element!=null) {

@@ -9,5 +9,5 @@ import com.arpankundu.journalApp.models.Users;
 @Repository
 public interface UserRepo extends JpaRepository<Users, Integer>{
 
-	Users findUserByUsername(String username);
+	Users findUsersByUsername(String username);
 }

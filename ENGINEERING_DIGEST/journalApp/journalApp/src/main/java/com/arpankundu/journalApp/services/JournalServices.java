@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.arpankundu.journalApp.models.JournalEntry;
+import com.arpankundu.journalApp.models.Users;
 import com.arpankundu.journalApp.repository.JournalAppRepo;
 
 import jakarta.transaction.Transactional;
@@ -17,14 +18,13 @@ public class JournalServices {
 	@Autowired
 	private JournalAppRepo journalAppRepo;
 
-	@Transactional
-	public List<JournalEntry> getEntry() {
-		return journalAppRepo.findAll();
+	public List<JournalEntry> getEntry(Users user) {
+		return journalAppRepo.findByUsers(user);
 	}
 
-	@Transactional
-	public boolean createEntry(JournalEntry journalEntry) {
+	public boolean createEntry(JournalEntry journalEntry,Users user) {
 		try {
+			journalEntry.setUsers(user);
 			journalAppRepo.save(journalEntry);
 			return true;
 		}catch(Exception e) {
@@ -33,24 +33,26 @@ public class JournalServices {
 		}
 	}
 
-	@Transactional
-	public Optional<JournalEntry> getEntryById(Integer id) {
-		return journalAppRepo.findById(id);
+	public Optional<JournalEntry> getEntryById(Integer id,Users user) {
+		return journalAppRepo.findByIdAndUsers(id,user);
 	}
 
-	@Transactional
-	public boolean deleteById(Integer id) {
+	public boolean deleteById(Integer id,Users user) {
 		try {
-			journalAppRepo.deleteById(id);
-			return true;
+			Optional<JournalEntry> entry = journalAppRepo.findByIdAndUsers(id, user);
+			if(entry.isPresent()) {
+				journalAppRepo.deleteById(id);
+				return true;
+			}
+			else
+				return false;
 		}catch(Exception e) {
 			return false;
 		}
 	}
 
-	@Transactional
-	public boolean updateEntryById(Integer id, JournalEntry journalEntry) {
-		JournalEntry element=journalAppRepo.findById(id).get();
+	public boolean updateEntryById(Integer id, JournalEntry journalEntry,Users user) {
+		JournalEntry element=journalAppRepo.findByIdAndUsers(id,user).get();
 		if(element!=null) {
 			element.setContent(journalEntry.getContent());
 			element.setTitle(journalEntry.getTitle());

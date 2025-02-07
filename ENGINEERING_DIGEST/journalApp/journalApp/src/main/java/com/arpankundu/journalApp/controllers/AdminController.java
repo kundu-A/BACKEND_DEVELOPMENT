@@ -32,7 +32,7 @@ public class AdminController {
     public ResponseEntity<?> register(@RequestBody @Valid Users user) {
         try {
             String username = utilityService.extractUsernameFromEmail(user);
-            if (userRepo.findUserByUsername(username)==null)
+            if (userRepo.findUsersByUsername(username)==null)
                 return new ResponseEntity<>(adminService.registerAdmin(user), HttpStatus.CREATED);
             return new ResponseEntity<>("Admin already exist",HttpStatus.BAD_REQUEST);
         } catch (Exception e) {

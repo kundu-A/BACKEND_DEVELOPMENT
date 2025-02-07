@@ -49,4 +49,8 @@ public class UserService {
 	            return jwtService.generateToken(username);
 	        return "Login Failed";
 	    }
+	    
+	    public Users getLoggedInUser(String username) {
+	    	return userRepo.findUsersByUsername(username);
+	    }
 }

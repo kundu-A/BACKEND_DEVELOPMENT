@@ -40,7 +40,7 @@ public class Users {
 	private String password;
 	
 	@Enumerated(value = EnumType.STRING)
-	@Column(name="user_role",nullable=false)
+	@Column(name="role",nullable=false)
 	private Role role;
 	 
 	@Column(name="user_email",nullable=false)
@@ -48,7 +48,7 @@ public class Users {
     , message = "Please enter a valid email")
 	private String email;
 	
-	@Column(name="user's_name",nullable=false)
+	@Column(name="name",nullable=false)
 	@NotBlank(message="Name name can't be null")
 	private String name;
 	

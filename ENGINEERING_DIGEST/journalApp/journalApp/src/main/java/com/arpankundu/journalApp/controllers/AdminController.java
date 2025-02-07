@@ -3,6 +3,7 @@ package com.arpankundu.journalApp.controllers;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -39,5 +40,10 @@ public class AdminController {
             System.out.println(e.getMessage());
             return new ResponseEntity<>("Admin Registration Unsuccessful",HttpStatus.INTERNAL_SERVER_ERROR);
         }
+    }
+    
+    @GetMapping("/get-user-details")
+    public ResponseEntity<?> getUserDetails(){
+    	return new ResponseEntity<>(adminService.getAllUserDetails(),HttpStatus.OK);
     }
 }

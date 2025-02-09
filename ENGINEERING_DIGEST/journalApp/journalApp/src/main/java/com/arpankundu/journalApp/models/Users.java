@@ -53,7 +53,7 @@ public class Users {
 	private String name;
 	
 	@Column(name="journal_entries")
-	@OneToMany(mappedBy="users",cascade=CascadeType.ALL)
+	@OneToMany(mappedBy="users",cascade=CascadeType.PERSIST)
 	private List<JournalEntry> journals=new ArrayList<>();
 	
 	public List<JournalEntry> getJournals() {

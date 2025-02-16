@@ -48,7 +48,8 @@ public class UserController {
 	        try {
 	            return new ResponseEntity<>(userService.verify(user), HttpStatus.OK);
 	        } catch (Exception e) {
-	            return new ResponseEntity<>("Login Failed", HttpStatus.INTERNAL_SERVER_ERROR);
+	        	System.out.println(e.getMessage());
+	            return new ResponseEntity<>("Login Failed...", HttpStatus.INTERNAL_SERVER_ERROR);
 	        }
 
 	    }

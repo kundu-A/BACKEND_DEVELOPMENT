@@ -1,5 +1,6 @@
 package com.arpankundu.journalApp.services;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 
@@ -25,6 +26,8 @@ public class JournalServices {
 	public boolean createEntry(JournalEntry journalEntry,Users user) {
 		try {
 			journalEntry.setUsers(user);
+			journalEntry.setSharedBy(user.getName());
+			journalEntry.setDate(LocalDate.now());
 			journalAppRepo.save(journalEntry);
 			return true;
 		}catch(Exception e) {

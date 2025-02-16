@@ -1,5 +1,8 @@
 package com.arpankundu.journalApp.models;
 
+import java.time.LocalDate;
+import java.util.Date;
+
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import jakarta.persistence.Column;
@@ -10,6 +13,7 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
+import jakarta.validation.constraints.NotBlank;
 
 @Entity
 @Table(name="journals_list")
@@ -20,17 +24,37 @@ public class JournalEntry {
 	@Column(name="journal_id")
 	private Integer id;
 	
-	@Column(name="journal_title")
+	@NotBlank(message="Journal Title Cant' be Null")
+	@Column(name="journal_title",nullable=false)
 	private String title;
 	
+	@NotBlank(message="Journal Title Cant' be Null")
 	@Column(name="journal_content")
 	private String content;
+	
+	@Column(name="shared_by")
+	private String sharedBy;
+	
+	@Column(name="uploaded_date")
+	private LocalDate date;
 	
 	@ManyToOne
 	@JoinColumn(name="user_id",nullable=false)
 	@JsonIgnore
 	private Users users;
 	
+	public String getSharedBy() {
+		return sharedBy;
+	}
+	public void setSharedBy(String sharedBy) {
+		this.sharedBy = sharedBy;
+	}
+	public LocalDate getDate() {
+		return date;
+	}
+	public void setDate(LocalDate date) {
+		this.date = date;
+	}
 	public Users getUsers() {
 		return users;
 	}

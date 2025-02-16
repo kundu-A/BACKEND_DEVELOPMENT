@@ -22,6 +22,8 @@ import com.arpankundu.journalApp.models.Users;
 import com.arpankundu.journalApp.repository.UserRepo;
 import com.arpankundu.journalApp.services.JournalServices;
 
+import jakarta.validation.Valid;
+
 @RestController
 @RequestMapping("/journal")
 public class JournalEntryPoint {
@@ -53,7 +55,7 @@ public class JournalEntryPoint {
 	
 	//Set A Record : http:8080/journal/set
 	@PostMapping("/set")
-	public ResponseEntity<?> createEntry(@RequestBody JournalEntry journalEntry,@AuthenticationPrincipal UserPrinciple principle){
+	public ResponseEntity<?> createEntry(@RequestBody @Valid JournalEntry journalEntry,@AuthenticationPrincipal UserPrinciple principle){
 		try {
 			Users loggedUser=userRepo.findUsersByUsername(principle.getUsername());
 			System.out.println(loggedUser);
@@ -107,7 +109,7 @@ public class JournalEntryPoint {
 	
 	//Get Update Record By Id : http:8080/journal/update/1
 	@PutMapping("/update/{id}")
-	public ResponseEntity<?> updateById(@PathVariable Integer id , @RequestBody JournalEntry journalEntry,@AuthenticationPrincipal UserPrinciple principle){
+	public ResponseEntity<?> updateById(@PathVariable Integer id , @RequestBody @Valid JournalEntry journalEntry,@AuthenticationPrincipal UserPrinciple principle){
 		try {
 			Users loggedUser=userRepo.findUsersByUsername(principle.getUsername());
 			if(loggedUser==null)

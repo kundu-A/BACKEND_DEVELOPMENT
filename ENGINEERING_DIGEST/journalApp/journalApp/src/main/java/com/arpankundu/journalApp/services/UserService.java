@@ -29,11 +29,17 @@ public class UserService {
 	    @Autowired
 	    UtilityService utilityService;
 
+	    @Autowired
+	    MailOTPService mailOTPService;
+	    
 	    public Users register(Users user) {
-	        user.setUsername(utilityService.extractUsernameFromEmail(user)); // username = substring of email id, before @ symbol
-	        user.setPassword(passwordEncoder.encode(user.getPassword()));
-	        user.setRole(Role.ROLE_USER);
-	        return userRepo.save(user);
+	    	String email=user.getEmail();
+	    	if(mailOTPService.verifiedEmails.contains(email))
+	    		user.setUsername(utilityService.extractUsernameFromEmail(user)); // username = substring of email id, before @ symbol
+	        	user.setPassword(passwordEncoder.encode(user.getPassword()));
+	        	user.setRole(Role.ROLE_USER);
+	        	mailOTPService.welcomeEmail(email);
+	        	return userRepo.save(user);
 	    }
 
 	    public String verify(Users user) {

@@ -12,4 +12,9 @@ public class UtilityService {
         int endIndex = email.indexOf('@');
         return email.substring(0, endIndex);
     }
+
+	public String extractUsernameFromEmail(String email) {
+        int endIndex = email.indexOf('@');
+        return email.substring(0, endIndex);
+	}
 }

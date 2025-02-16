@@ -2,41 +2,23 @@ package com.arpankundu.journalApp.models;
 
 import org.springframework.stereotype.Component;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.validation.constraints.NotBlank;
-
 @Component
 public class MailOTP {
 
-	private String to;
-	private String body;
-	private String subject;
-
-	public String getTo() {
-		return to;
+	private String email;
+	private String otp;
+	
+	public String getEmail() {
+		return email;
 	}
-
-	public void setTo(String to) {
-		this.to = to;
+	public void setEmail(String email) {
+		this.email = email;
 	}
-
-	public String getBody() {
-		return body;
+	public String getOtp() {
+		return otp;
 	}
-
-	public void setBody(String body) {
-		this.body = body;
+	public void setOtp(String otp) {
+		this.otp = otp;
 	}
-
-	public String getSubject() {
-		return subject;
-	}
-
-	public void setSubject(String subject) {
-		this.subject = subject;
-	}
+	
 }

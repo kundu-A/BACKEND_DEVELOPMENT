@@ -4,7 +4,6 @@ package com.arpankundu.journalApp.models;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
@@ -52,6 +51,9 @@ public class Users {
 	@NotBlank(message="Name name can't be null")
 	private String name;
 	
+	@Column(name="mobile_no")
+	private String MobileNo;
+	
 	@Column(name="journal_entries")
 	@OneToMany(mappedBy="users",cascade=CascadeType.PERSIST)
 	private List<JournalEntry> journals=new ArrayList<>();
@@ -98,5 +100,11 @@ public class Users {
 	}
 	public void setRole(Role role) {
 		this.role = role;
+	}
+	public String getMobileNo() {
+		return MobileNo;
+	}
+	public void setMobileNo(String mobileNo) {
+		MobileNo = mobileNo;
 	}
 }

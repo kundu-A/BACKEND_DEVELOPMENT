@@ -12,7 +12,7 @@ import com.arpankundu.journalApp.models.OTP;
 import com.arpankundu.journalApp.services.OTPService;
 
 @RestController
-@RequestMapping("/user")
+@RequestMapping("/otp")
 public class OTPController {
 
 	@Autowired

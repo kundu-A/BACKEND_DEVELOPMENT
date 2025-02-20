@@ -7,6 +7,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import com.arpankundu.journalApp.models.MailOTP;
 import com.arpankundu.journalApp.models.Role;
 import com.arpankundu.journalApp.models.Users;
 import com.arpankundu.journalApp.repository.UserRepo;
@@ -34,12 +35,14 @@ public class UserService {
 	    
 	    public Users register(Users user) {
 	    	String email=user.getEmail();
-	    	if(mailOTPService.verifiedEmails.contains(email))
+	    	if(mailOTPService.verifiedEmails.contains(email)) {
 	    		user.setUsername(utilityService.extractUsernameFromEmail(user)); // username = substring of email id, before @ symbol
 	        	user.setPassword(passwordEncoder.encode(user.getPassword()));
 	        	user.setRole(Role.ROLE_USER);
 	        	mailOTPService.welcomeEmail(email);
 	        	return userRepo.save(user);
+	    	}
+	    	return null;
 	    }
 
 	    public String verify(Users user) {
@@ -58,5 +61,18 @@ public class UserService {
 	    
 	    public Users getLoggedInUser(String username) {
 	    	return userRepo.findUsersByUsername(username);
+	    }
+	    
+	    public String OTPVerifiedLogin(MailOTP mailOTP) {
+	    	try {
+	    	String username=utilityService.extractUsernameFromEmail(mailOTP.getEmail());
+	    	Users user=userRepo.findUsersByUsername(username);
+	    	if(user!=null)
+	    		return jwtService.generateToken(username);
+	    	return "Provide the valid email!!";
+	    	}catch(Exception e) {
+	    		System.out.println(e.getMessage());
+	    		return "Some issues aries!!";
+	    	}
 	    }
 }

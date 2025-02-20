@@ -26,7 +26,7 @@ public class OTPService {
 	
 	private static final String ACCOUNT_SID = "ACc3561647d13069ad4a277435ae5541b6";
 	//If OTP will be generated in console but not in SMS then check ACCOUNT_SID and AUTH_TOKEN in TWILIO.
-    public static final String AUTH_TOKEN = "962956152551db28ecc40f40cbef8b66";
+    public static final String AUTH_TOKEN = "946feac6f2b8903b7fdda41544bbc587";
     public static final String fromMobileNo = "+18159380805";
 
 	public void generateOtp(OTP userRequest) {

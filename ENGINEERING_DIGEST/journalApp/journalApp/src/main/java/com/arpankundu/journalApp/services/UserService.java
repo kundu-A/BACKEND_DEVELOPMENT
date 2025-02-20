@@ -75,4 +75,16 @@ public class UserService {
 	    		return "Some issues aries!!";
 	    	}
 	    }
+
+		public String forgotPassword(String email, String password) {
+			try {
+				Users user=userRepo.findUsersByEmail(email);
+				user.setPassword(passwordEncoder.encode(password));
+				userRepo.save(user);
+				return "Password is saved successfully!!";
+			}catch(Exception e) {
+				System.out.println(e.getMessage());
+				return "User not found!!";
+			}
+		}
 }

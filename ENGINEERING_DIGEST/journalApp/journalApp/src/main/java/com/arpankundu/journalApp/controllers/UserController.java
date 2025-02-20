@@ -2,13 +2,13 @@ package com.arpankundu.journalApp.controllers;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.arpankundu.journalApp.models.ForgotPassword;
 import com.arpankundu.journalApp.models.MailOTP;
 import com.arpankundu.journalApp.models.Users;
 import com.arpankundu.journalApp.repository.UserRepo;
@@ -98,5 +98,19 @@ public class UserController {
 				System.out.println(e.getMessage());
 				return new ResponseEntity<>("Some issues arises!!",HttpStatus.INTERNAL_SERVER_ERROR);
 			}
+	    }
+	    
+	    @PostMapping("/forgot-password")
+	    public ResponseEntity<?> forgotPassword(@RequestBody ForgotPassword request){
+	    	try {
+	    		String email=request.getEmail();
+	    		String password=request.getPassword();
+	    		if(userRepo.existsByEmail(email))
+	    			return new ResponseEntity<>(userService.forgotPassword(email,password),HttpStatus.OK);
+	    		return new ResponseEntity<>("Provided email is not registered!!",HttpStatus.BAD_REQUEST);
+	    	}catch(Exception e) {
+	    		System.out.println(e.getMessage());
+	    		return new ResponseEntity<>("Some internal issues!!",HttpStatus.INTERNAL_SERVER_ERROR);
+	    	}
 	    }
 }

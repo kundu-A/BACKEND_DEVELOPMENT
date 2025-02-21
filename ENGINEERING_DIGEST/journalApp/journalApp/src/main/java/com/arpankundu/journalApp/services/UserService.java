@@ -7,6 +7,10 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import com.arpankundu.journalApp.exceptionHandler.BadCredentialsException;
+import com.arpankundu.journalApp.exceptionHandler.EmailNotVerifiedException;
+import com.arpankundu.journalApp.exceptionHandler.UserAlreadyExistsException;
+import com.arpankundu.journalApp.exceptionHandler.UserNotFoundException;
 import com.arpankundu.journalApp.models.MailOTP;
 import com.arpankundu.journalApp.models.Role;
 import com.arpankundu.journalApp.models.Users;
@@ -34,34 +38,47 @@ public class UserService {
 	    MailOTPService mailOTPService;
 	    
 	    public Users register(Users user) {
-	    	String email=user.getEmail();
-	    	if(mailOTPService.verifiedEmails.contains(email)) {
-	    		user.setUsername(utilityService.extractUsernameFromEmail(user)); // username = substring of email id, before @ symbol
-	        	user.setPassword(passwordEncoder.encode(user.getPassword()));
-	        	user.setRole(Role.ROLE_USER);
-	        	mailOTPService.welcomeEmail(email);
-	        	return userRepo.save(user);
-	    	}
-	    	return null;
+	        String email = user.getEmail();
+	        if (!mailOTPService.verifiedEmails.contains(email)) 
+	            throw new EmailNotVerifiedException("Email verification required.");
+
+	        if (userRepo.findUsersByEmail(email) != null)
+	            throw new UserAlreadyExistsException("User with this email already exists.");
+
+	        user.setUsername(utilityService.extractUsernameFromEmail(user));
+	        user.setPassword(passwordEncoder.encode(user.getPassword()));
+	        user.setRole(Role.ROLE_USER);
+	        mailOTPService.welcomeEmail(email);
+
+	        return userRepo.save(user);
 	    }
+
 
 	    public String verify(Users user) {
 	        String username=utilityService.extractUsernameFromEmail(user);
-	        Authentication authentication =
-	                authenticationManager.authenticate(
-	                        new UsernamePasswordAuthenticationToken(
-	                                username,
-	                                user.getPassword()
-	                        )
-	                );
-	        if (authentication.isAuthenticated())
-	            return jwtService.generateToken(username);
-	        return "Login Failed";
+	        try {
+	        	Authentication authentication =
+	        			authenticationManager.authenticate(
+	        					new UsernamePasswordAuthenticationToken(
+	        							username,
+	        							user.getPassword()
+	        					)
+	        			);
+	        	if (authentication.isAuthenticated())
+	        		return jwtService.generateToken(username);
+	        }catch(Exception e) {
+	        	throw new BadCredentialsException("Invalid username or password.");
+	        }
+	        throw new BadCredentialsException("Invalid username or password.");
 	    }
 	    
 	    public Users getLoggedInUser(String username) {
-	    	return userRepo.findUsersByUsername(username);
+	        Users user = userRepo.findUsersByUsername(username);
+	        if (user == null) 
+	            throw new UserNotFoundException("User not found!!");
+	        return user;
 	    }
+
 	    
 	    public String OTPVerifiedLogin(MailOTP mailOTP) {
 	    	try {
@@ -83,6 +100,6 @@ public class UserService {
 					userRepo.save(user);
 					return "Password is saved successfully!!";
 				}
-				return "User not found!!";
+				 throw new EmailNotVerifiedException("Email verification required.");
 		}
 }

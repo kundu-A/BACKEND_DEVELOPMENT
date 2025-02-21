@@ -65,6 +65,11 @@ public class UserController {
 
 	    }
 
+	    /*
+	     * PROCESS OF LOGIN::
+	     * 1. Go to login URL -> Put email and password -> Get JWT Token.
+	     */
+	    
 	    @PostMapping("/login")
 	    public ResponseEntity<?> login(@RequestBody @Valid Users user) {
 	        try {
@@ -74,6 +79,11 @@ public class UserController {
 	            return new ResponseEntity<>("Login Failed...", HttpStatus.INTERNAL_SERVER_ERROR);
 	        }
 	    }
+	    
+	    /*
+	     * PROCESS OF LOGIN WITH OTP::
+	     * 1. Go to login-with-otp URL -> Receive OTP into provided email id.
+	     */
 	    
 	    @PostMapping("/login-with-otp")
 	    public ResponseEntity<?> loginWithOTP(@RequestBody MailOTP mailOTP){
@@ -88,6 +98,12 @@ public class UserController {
 	    	}
 	    }
 	    
+	    /*
+	     * PROCESS OF VERIFY OTP::
+	     * 1. Go to verify-otp-login URL -> verify the provided otp and email.
+	     * 		If the provided otp is verified the  JWT token is generated.
+	     */
+	    
 	    @PostMapping("/verify-otp-login")
 	    public ResponseEntity<?> verifyOTP(@RequestBody MailOTP mailOTP){
 	    	try {
@@ -99,6 +115,13 @@ public class UserController {
 				return new ResponseEntity<>("Some issues arises!!",HttpStatus.INTERNAL_SERVER_ERROR);
 			}
 	    }
+	    
+	    /*
+	     * PROCESS OF FORGOT PASSWORD::
+	     * 1. Go to the login-your-otp URL -> put your password and you receive an OTP.
+	     * 2. Go to the verify-otp URL -> Put that email id and OTP to validate your email.
+	     * 3. Go to the forgot-password -> Put your email id and password to update the password.
+	     */
 	    
 	    @PostMapping("/forgot-password")
 	    public ResponseEntity<?> forgotPassword(@RequestBody ForgotPassword request){

@@ -77,14 +77,12 @@ public class UserService {
 	    }
 
 		public String forgotPassword(String email, String password) {
-			try {
-				Users user=userRepo.findUsersByEmail(email);
-				user.setPassword(passwordEncoder.encode(password));
-				userRepo.save(user);
-				return "Password is saved successfully!!";
-			}catch(Exception e) {
-				System.out.println(e.getMessage());
+				if(mailOTPService.verifiedEmails.contains(email)){
+					Users user=userRepo.findUsersByEmail(email);
+					user.setPassword(passwordEncoder.encode(password));
+					userRepo.save(user);
+					return "Password is saved successfully!!";
+				}
 				return "User not found!!";
-			}
 		}
 }

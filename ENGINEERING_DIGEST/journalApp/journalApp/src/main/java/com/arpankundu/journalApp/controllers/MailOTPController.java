@@ -18,6 +18,11 @@ public class MailOTPController {
 	@Autowired
 	MailOTPService mailOTPService;
 	
+	/*
+	 * PROCESS OF VALIDATE YOUR EMAIL::
+	 * 1. Go to the validate-your-email -> Generate otp and send it to the email id.
+	 */
+	
 	@PostMapping("/validate-your-email")
 	public ResponseEntity<?> validateOTP(@RequestBody MailOTP mailRequest){
 		try {
@@ -28,6 +33,11 @@ public class MailOTPController {
 			return new ResponseEntity<>("Some issues arises!!",HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 	}
+	
+	/*
+	 * PROCESS OF VERIFY THE OTP::
+	 * 1. Go to the verify-otp -> Put the email id and otp -> Check , if the provided otp is valid then it will send the successfull message.
+	 */
 	
 	@PostMapping("/verify-otp")
 	public ResponseEntity<?> verifyOTP(@RequestBody MailOTP mailRequest){

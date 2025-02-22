@@ -6,6 +6,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import com.arpankundu.journalApp.exceptionHandler.EmailNotVerifiedException;
+import com.arpankundu.journalApp.exceptionHandler.UserAlreadyExistsException;
 import com.arpankundu.journalApp.models.Role;
 import com.arpankundu.journalApp.models.Users;
 import com.arpankundu.journalApp.repository.UserRepo;
@@ -21,11 +23,23 @@ public class AdminService {
 
     @Autowired
     UtilityService utilityService;
+    
+    @Autowired
+    MailOTPService mailOTPService;
 
     public Users registerAdmin(Users user) {
-        user.setUsername(utilityService.extractUsernameFromEmail(user));  // username = substring of email id, before @ symbol
+    	String email = user.getEmail();
+        if (!mailOTPService.verifiedEmails.contains(email)) 
+            throw new EmailNotVerifiedException("Email verification required.");
+
+        if (userRepo.findUsersByEmail(email) != null)
+            throw new UserAlreadyExistsException("Admin with this email already exists.");
+
+        user.setUsername(utilityService.extractUsernameFromEmail(user));
         user.setPassword(passwordEncoder.encode(user.getPassword()));
         user.setRole(Role.ROLE_ADMIN);
+        mailOTPService.welcomeEmail(email);
+
         return userRepo.save(user);
     }
 

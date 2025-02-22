@@ -4,6 +4,7 @@ package com.arpankundu.journalApp.models;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
@@ -28,6 +29,7 @@ public class Users {
 	@Column(name="username",nullable=false,unique=true)
 	private String username;
 	
+	@JsonIgnore
 	@NotBlank(message="Password can't be null")
 	@Column(name="password",nullable=false)
 	@Pattern(regexp = "^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[@#$%^&+=]).{8,}$"

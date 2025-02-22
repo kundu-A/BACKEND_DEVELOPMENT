@@ -1,7 +1,7 @@
 package com.arpankundu.journalApp.services;
 
 import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
@@ -10,6 +10,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
 import com.arpankundu.journalApp.exceptionHandler.EmailSendingException;
@@ -26,7 +27,7 @@ public class MailOTPService {
 	
 	private Map<String,String> otpMap=new ConcurrentHashMap<>();
 	private Map<String, Long> otpExpiryMap = new ConcurrentHashMap<>();
-	List<String> verifiedEmails=new ArrayList<>();
+	List<String> verifiedEmails=Collections.synchronizedList(new ArrayList<>());
 	
 	private static final String fromMail = "kunduarpan43@gmail.com";
 	
@@ -83,12 +84,13 @@ public class MailOTPService {
 		}
 	}
 	
+	//@Async
 	public void welcomeEmail(String mailTo) {
 		try {
 			SimpleMailMessage message = new SimpleMailMessage();
 			message.setTo(mailTo);
-			message.setSubject("Registration Successfull!!");
-			message.setText("Hey, Welcome to the Journal Application.\nNow you can upload your first Journal.....\nBest of luck!!!");
+			message.setSubject(getEmailSubject());
+			message.setText(getEmailBody());
 			message.setFrom(fromMail);
 			javaMailSender.send(message);
 		}catch(Exception e) {
@@ -96,5 +98,19 @@ public class MailOTPService {
 			throw new EmailSendingException("Failed to send OTP email");
 		}
 	}
+	public String getEmailBody() {
+		return "Your registration with Jouranl Application has been successfully completed!\n" +
+                "\n" +
+                "Please note, this is a system-generated email—no replies will be monitored.\n" +
+                "\n" +
+                "Thank you for joining us!\n" +
+                "\n" +
+                "Best regards,\n" +
+                "Team Journal Application";
+	}
+	public String getEmailSubject()
+    {
+        return "Registration Successful - NoteSeva";
+    }
 
 }

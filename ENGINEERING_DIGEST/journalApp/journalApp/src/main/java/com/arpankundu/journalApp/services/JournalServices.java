@@ -11,8 +11,6 @@ import com.arpankundu.journalApp.models.JournalEntry;
 import com.arpankundu.journalApp.models.Users;
 import com.arpankundu.journalApp.repository.JournalAppRepo;
 
-import jakarta.transaction.Transactional;
-
 @Service
 public class JournalServices {
 

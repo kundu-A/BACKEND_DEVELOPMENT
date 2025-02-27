@@ -26,6 +26,9 @@ public class AdminService {
     
     @Autowired
     MailOTPService mailOTPService;
+    
+    @Autowired
+    EmailService emailService;
 
     public Users registerAdmin(Users user) {
     	String email = user.getEmail();
@@ -38,7 +41,7 @@ public class AdminService {
         user.setUsername(utilityService.extractUsernameFromEmail(user));
         user.setPassword(passwordEncoder.encode(user.getPassword()));
         user.setRole(Role.ROLE_ADMIN);
-        mailOTPService.welcomeEmail(email);
+        emailService.welcomeEmail(email);
 
         return userRepo.save(user);
     }

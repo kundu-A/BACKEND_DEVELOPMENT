@@ -1,7 +1,6 @@
 package com.arpankundu.journalApp.models;
 
 import java.time.LocalDate;
-import java.util.Date;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 

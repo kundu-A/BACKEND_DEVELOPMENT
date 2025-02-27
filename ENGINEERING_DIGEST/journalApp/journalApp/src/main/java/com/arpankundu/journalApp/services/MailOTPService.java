@@ -1,19 +1,15 @@
 package com.arpankundu.journalApp.services;
 
-import java.util.ArrayList;
 import java.util.Collections;
-import java.util.List;
 import java.util.Map;
 import java.util.Random;
+import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
-import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
-import com.arpankundu.journalApp.exceptionHandler.EmailSendingException;
 import com.arpankundu.journalApp.exceptionHandler.InvalidOTPException;
 import com.arpankundu.journalApp.exceptionHandler.OTPExpiredException;
 import com.arpankundu.journalApp.exceptionHandler.OTPGenerationException;
@@ -27,24 +23,8 @@ public class MailOTPService {
 	
 	private Map<String,String> otpMap=new ConcurrentHashMap<>();
 	private Map<String, Long> otpExpiryMap = new ConcurrentHashMap<>();
-	List<String> verifiedEmails=Collections.synchronizedList(new ArrayList<>());
-	
-	private static final String fromMail = "kunduarpan43@gmail.com";
-	
-	public void sendOTP(MailOTP mailRequest) {
-		try {
-			SimpleMailMessage message = new SimpleMailMessage();
-			message.setTo(mailRequest.getEmail());
-			message.setSubject("One-Time-Password to validate your mail");
-			message.setText("Your OTP is: "+generateOTP(mailRequest.getEmail()));
-			message.setFrom(fromMail);
-			javaMailSender.send(message);
-		}catch(Exception e) {
-			System.out.println(e.getMessage());
-			throw new EmailSendingException("Failed to send OTP email");
-		}
-		
-	}
+	Set<String> verifiedEmails = Collections.newSetFromMap(new ConcurrentHashMap<>());
+
 
 	public String generateOTP(String toEmail) {
 		try {
@@ -83,34 +63,4 @@ public class MailOTPService {
 				return false;
 		}
 	}
-	
-	//@Async
-	public void welcomeEmail(String mailTo) {
-		try {
-			SimpleMailMessage message = new SimpleMailMessage();
-			message.setTo(mailTo);
-			message.setSubject(getEmailSubject());
-			message.setText(getEmailBody());
-			message.setFrom(fromMail);
-			javaMailSender.send(message);
-		}catch(Exception e) {
-			System.out.println(e.getMessage());
-			throw new EmailSendingException("Failed to send OTP email");
-		}
-	}
-	public String getEmailBody() {
-		return "Your registration with Jouranl Application has been successfully completed!\n" +
-                "\n" +
-                "Please note, this is a system-generated email—no replies will be monitored.\n" +
-                "\n" +
-                "Thank you for joining us!\n" +
-                "\n" +
-                "Best regards,\n" +
-                "Team Journal Application";
-	}
-	public String getEmailSubject()
-    {
-        return "Registration Successful - NoteSeva";
-    }
-
 }

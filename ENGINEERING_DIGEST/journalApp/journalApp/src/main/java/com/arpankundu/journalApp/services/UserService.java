@@ -37,6 +37,9 @@ public class UserService {
 	    @Autowired
 	    MailOTPService mailOTPService;
 	    
+	    @Autowired
+	    EmailService emailService;
+	    
 	    public Users register(Users user) {
 	        String email = user.getEmail();
 	        if (!mailOTPService.verifiedEmails.contains(email)) 
@@ -48,7 +51,7 @@ public class UserService {
 	        user.setUsername(utilityService.extractUsernameFromEmail(user));
 	        user.setPassword(passwordEncoder.encode(user.getPassword()));
 	        user.setRole(Role.ROLE_USER);
-	        mailOTPService.welcomeEmail(email);
+	        emailService.welcomeEmail(email);
 
 	        return userRepo.save(user);
 	    }

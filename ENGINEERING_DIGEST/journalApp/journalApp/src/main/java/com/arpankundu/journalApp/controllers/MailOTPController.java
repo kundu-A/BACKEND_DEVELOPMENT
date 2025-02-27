@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.arpankundu.journalApp.models.MailOTP;
+import com.arpankundu.journalApp.services.EmailService;
 import com.arpankundu.journalApp.services.MailOTPService;
 
 @RestController
@@ -18,6 +19,9 @@ public class MailOTPController {
 	@Autowired
 	MailOTPService mailOTPService;
 	
+	@Autowired
+	EmailService emailService;
+	
 	/*
 	 * PROCESS OF VALIDATE YOUR EMAIL::
 	 * 1. Go to the validate-your-email -> Generate otp and send it to the email id.
@@ -26,7 +30,7 @@ public class MailOTPController {
 	@PostMapping("/validate-your-email")
 	public ResponseEntity<?> validateOTP(@RequestBody MailOTP mailRequest){
 		try {
-			mailOTPService.sendOTP(mailRequest);
+			emailService.sendOTP(mailRequest);
 			return new ResponseEntity<>("OTP sent successfully!!",HttpStatus.CREATED);
 		}catch(Exception e) {
 			System.out.println(e.getMessage());

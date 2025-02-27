@@ -12,6 +12,7 @@ import com.arpankundu.journalApp.models.ForgotPassword;
 import com.arpankundu.journalApp.models.MailOTP;
 import com.arpankundu.journalApp.models.Users;
 import com.arpankundu.journalApp.repository.UserRepo;
+import com.arpankundu.journalApp.services.EmailService;
 import com.arpankundu.journalApp.services.MailOTPService;
 import com.arpankundu.journalApp.services.UserService;
 import com.arpankundu.journalApp.services.UtilityService;
@@ -33,6 +34,11 @@ public class UserController {
 	    
 	    @Autowired
 	    MailOTPService mailOTPService;
+	    
+	    @Autowired
+	    EmailService emailService;
+	    
+	    
 
 	    /*
 	     * PROCESS OF USER REGISTRATION::
@@ -55,8 +61,11 @@ public class UserController {
 	    public ResponseEntity<?> register(@RequestBody @Valid Users user) {
 	        try {
 	            String username = utilityService.extractUsernameFromEmail(user);
-	            if (userRepo.findUsersByUsername(username)==null)
-	                return new ResponseEntity<>(userService.register(user), HttpStatus.CREATED);
+	            if (userRepo.findUsersByUsername(username)==null) {
+	            	Users record=userService.register(user);
+	            	if(record!=null)
+	            		return new ResponseEntity<>("Registration successfull!!", HttpStatus.CREATED);
+	            }
 	            return new ResponseEntity<>("User already exist",HttpStatus.BAD_REQUEST);
 	        } catch (Exception e) {
 	            System.out.println(e.getMessage());
@@ -90,7 +99,7 @@ public class UserController {
 	    	try {
 	    		if(!userRepo.existsByEmail(mailOTP.getEmail()))
 	    			return new ResponseEntity<>("This email id not valid!!",HttpStatus.BAD_REQUEST);
-	    		mailOTPService.sendOTP(mailOTP);
+	    		emailService.sendOTP(mailOTP);
 	    		return new ResponseEntity<>("OTP sent successfully!!",HttpStatus.CREATED);
 	    	}catch(Exception e) {
 	    		System.out.println(e.getMessage());

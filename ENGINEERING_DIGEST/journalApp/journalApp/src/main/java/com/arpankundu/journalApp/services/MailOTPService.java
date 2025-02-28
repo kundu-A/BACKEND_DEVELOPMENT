@@ -8,12 +8,14 @@ import java.util.concurrent.ConcurrentHashMap;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mail.javamail.JavaMailSender;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
 import com.arpankundu.journalApp.exceptionHandler.InvalidOTPException;
 import com.arpankundu.journalApp.exceptionHandler.OTPExpiredException;
 import com.arpankundu.journalApp.exceptionHandler.OTPGenerationException;
 import com.arpankundu.journalApp.models.MailOTP;
+import com.arpankundu.journalApp.utilityService.OTPUtil;
 
 @Service
 public class MailOTPService {
@@ -30,9 +32,9 @@ public class MailOTPService {
 		try {
 		 	Random random = new Random();
 	        String otp = String.valueOf(random.nextInt(99999)+100000);
-	        otpMap.put(toEmail,otp);
+	        String hashedOtp = OTPUtil.hashOTP(otp);
+	        otpMap.put(toEmail,hashedOtp);
 	        otpExpiryMap.put(toEmail, System.currentTimeMillis() + (1 * 60 * 1000)); //1 min valid.
-	        System.out.println(otpMap);
 	        return otp;
 		}catch(Exception e) {
 			System.out.println(e.getMessage());
@@ -51,7 +53,8 @@ public class MailOTPService {
 		        otpExpiryMap.remove(email);
 		        throw new OTPExpiredException("OTP has expired");
 		    }
-		    if(mailRequest.getOtp().equals(otpMap.get(email))) {
+		    String enteredHashedOtp = OTPUtil.hashOTP(mailRequest.getOtp());
+		    if(enteredHashedOtp.equals(otpMap.get(email))) {
 		    	verifiedEmails.add(email);
 		    	otpExpiryMap.remove(email);
 		    	otpMap.remove(email);
@@ -63,4 +66,21 @@ public class MailOTPService {
 				return false;
 		}
 	}
+	
+	@Scheduled(fixedRate = 60000)
+	public void removeExpiredOTPs() {
+	    System.out.println("Running OTP cleanup at: " + new java.util.Date());
+	    long currentTime = System.currentTimeMillis();
+	    otpExpiryMap.entrySet().removeIf(entry -> { 
+	        boolean isExpired = currentTime > entry.getValue();
+	        if (isExpired) { 
+	            String email = entry.getKey();
+	            otpMap.remove(email);  
+	            verifiedEmails.remove(email);
+	            System.out.println("Removed expired OTP for: " + email);
+	        }
+	        return isExpired; 
+	    });
+	}
+
 }

@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 
 import com.arpankundu.journalApp.exceptionHandler.BadCredentialsException;
 import com.arpankundu.journalApp.exceptionHandler.EmailNotVerifiedException;
+import com.arpankundu.journalApp.exceptionHandler.RegistrationRelatedException;
 import com.arpankundu.journalApp.exceptionHandler.UserAlreadyExistsException;
 import com.arpankundu.journalApp.exceptionHandler.UserNotFoundException;
 import com.arpankundu.journalApp.models.MailOTP;
@@ -51,9 +52,16 @@ public class UserService {
 	        user.setUsername(utilityService.extractUsernameFromEmail(user));
 	        user.setPassword(passwordEncoder.encode(user.getPassword()));
 	        user.setRole(Role.ROLE_USER);
-	        emailService.welcomeEmail(email);
-
-	        return userRepo.save(user);
+	        try {
+	        	Users users=userRepo.save(user);
+	        	if(users!=null) {
+	        		emailService.welcomeEmail(email);
+	        		return users;
+	        	}
+	        	throw new RegistrationRelatedException("User registration failed");
+	        }catch(Exception e) {
+	        	throw new RuntimeException("User registration failed", e); 
+	        }
 	    }
 
 

@@ -48,6 +48,10 @@ public class GlobalExceptionHandler {
 		return new ResponseEntity<>("An unexpected error occurred: " + e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
 	}
 	
+	public ResponseEntity<String> handleRegistrationRelatedException(RegistrationRelatedException e){
+		return new ResponseEntity<>("An unexpected error occurred: " + e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+	}
+	
 	@ExceptionHandler(Exception.class)
 	public ResponseEntity<String> handleGeneralException(Exception e) {
 		return new ResponseEntity<>("An unexpected error occurred: " + e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);

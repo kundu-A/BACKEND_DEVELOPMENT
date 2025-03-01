@@ -41,9 +41,13 @@ public class AdminService {
         user.setUsername(utilityService.extractUsernameFromEmail(user));
         user.setPassword(passwordEncoder.encode(user.getPassword()));
         user.setRole(Role.ROLE_ADMIN);
-        emailService.welcomeEmail(email);
-
-        return userRepo.save(user);
+        try {
+        	Users users=userRepo.save(user);
+        	emailService.welcomeEmail(email);
+        	return users;
+        }catch(Exception e) {
+        	throw new RuntimeException("User registration failed", e); 
+        }
     }
 
 	public List<?> getAllUserDetails() {

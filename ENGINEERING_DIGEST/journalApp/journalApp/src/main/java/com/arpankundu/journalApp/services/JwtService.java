@@ -20,6 +20,7 @@ import io.jsonwebtoken.security.Keys;
 
 @Service
 public class JwtService {
+
 private String secretKey="";
 	
 	public JwtService(){
@@ -52,7 +53,7 @@ private String secretKey="";
 		return Keys.hmacShaKeyFor(keyBytes);
 	}
 
-	public String extractUserName(String token) {
+	public String extractUsername(String token) {
 		return extractClaim(token,Claims::getSubject);
 	}
 	private<T> T extractClaim(String token,Function<Claims,T> claimResolver) {
@@ -66,7 +67,7 @@ private String secretKey="";
 		}
 
 	public boolean validateToken(String token, UserDetails userDetails) {
-		final String userName=extractUserName(token);
+		final String userName=extractUsername(token);
 		return (userName.equals(userDetails.getUsername())&&!isTokenExpired(token));
 	}
 	private boolean isTokenExpired(String token) {
@@ -75,8 +76,5 @@ private String secretKey="";
 	private Date extractExpiration(String token) {
 		return extractClaim(token,Claims::getExpiration);
 	}
-	 public String extractUsername(String token) {
-	        // extract the username from jwt token
-	        return extractClaim(token, Claims::getSubject);
-	    }
+
 }

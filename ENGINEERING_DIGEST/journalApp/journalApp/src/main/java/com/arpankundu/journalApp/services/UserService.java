@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -12,6 +13,7 @@ import com.arpankundu.journalApp.exceptionHandler.EmailNotVerifiedException;
 import com.arpankundu.journalApp.exceptionHandler.RegistrationRelatedException;
 import com.arpankundu.journalApp.exceptionHandler.UserAlreadyExistsException;
 import com.arpankundu.journalApp.exceptionHandler.UserNotFoundException;
+import com.arpankundu.journalApp.models.ChangePassword;
 import com.arpankundu.journalApp.models.MailOTP;
 import com.arpankundu.journalApp.models.Role;
 import com.arpankundu.journalApp.models.Users;
@@ -112,5 +114,35 @@ public class UserService {
 					return "Password is saved successfully!!";
 				}
 				 throw new EmailNotVerifiedException("Email verification required.");
+		}
+		
+		public boolean changePassword(ChangePassword request) {
+			String newPassword=passwordEncoder.encode(request.getNewPassword());
+			String username=SecurityContextHolder.getContext().getAuthentication().getName();
+			Users user=userRepo.findUsersByUsername(username);
+			if(!passwordEncoder.matches(request.getOlderPassword(), user.getPassword()))
+				return false;
+			if(!request.getNewPassword().equals(request.getConfirmPassword()))
+				return false;
+			try {
+				user.setPassword(newPassword);
+				userRepo.save(user);
+				return true;
+			}catch(Exception e) {
+				System.out.println(e.getMessage());
+				return false;
+			}
+		}
+
+		public boolean setPassword(ChangePassword request,String email) {
+			if(!request.getNewPassword().equals(request.getConfirmPassword()))
+				return false;
+			if(mailOTPService.verifiedEmails.contains(email)){
+				Users user=userRepo.findUsersByEmail(email);
+				user.setPassword(passwordEncoder.encode(request.getNewPassword()));
+				userRepo.save(user);
+				return true;
+			}
+			return false;
 		}
 }

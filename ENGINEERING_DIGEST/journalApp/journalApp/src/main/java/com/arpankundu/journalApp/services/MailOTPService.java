@@ -67,7 +67,7 @@ public class MailOTPService {
 		}
 	}
 	
-	@Scheduled(fixedRate = 60000)
+	@Scheduled(fixedRate = 10*60000)
 	public void removeExpiredOTPs() {
 	    System.out.println("Running OTP cleanup at: " + new java.util.Date());
 	    long currentTime = System.currentTimeMillis();

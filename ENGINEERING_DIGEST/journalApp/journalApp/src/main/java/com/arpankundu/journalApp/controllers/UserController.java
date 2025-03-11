@@ -135,6 +135,7 @@ public class UserController {
 	    @PostMapping("/forgot-password")
 	    public ResponseEntity<?> forgotPassword(@RequestBody ForgotPassword request){
 	    	try {
+	    		emailService.alertEmail(request.getEmail());
 	    		String email=request.getEmail();
 	    		String password=request.getPassword();
 	    		if(userRepo.existsByEmail(email))

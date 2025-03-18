@@ -1,5 +1,7 @@
 package com.arpankundu.journalApp.services;
 
+import java.time.LocalDateTime;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -14,6 +16,7 @@ import com.arpankundu.journalApp.exceptionHandler.RegistrationRelatedException;
 import com.arpankundu.journalApp.exceptionHandler.UserAlreadyExistsException;
 import com.arpankundu.journalApp.exceptionHandler.UserNotFoundException;
 import com.arpankundu.journalApp.models.ChangePassword;
+import com.arpankundu.journalApp.models.ForgotPassword;
 import com.arpankundu.journalApp.models.MailOTP;
 import com.arpankundu.journalApp.models.Role;
 import com.arpankundu.journalApp.models.Users;
@@ -77,8 +80,13 @@ public class UserService {
 	        							user.getPassword()
 	        					)
 	        			);
-	        	if (authentication.isAuthenticated())
-	        		return jwtService.generateToken(username);
+	        	if (authentication.isAuthenticated()) {
+	        		String token=jwtService.generateToken(username);
+	        		if(token!=null)
+	        			user.setTokenIssueTime(LocalDateTime.now());
+	        		System.out.println(user.getTokenIssueTime());
+	        		return token;
+	        	}
 	        }catch(Exception e) {
 	        	throw new BadCredentialsException("Invalid username or password.");
 	        }
@@ -126,6 +134,7 @@ public class UserService {
 				return false;
 			try {
 				user.setPassword(newPassword);
+				user.setTokenIssueTime(LocalDateTime.now());
 				userRepo.save(user);
 				return true;
 			}catch(Exception e) {
@@ -140,6 +149,20 @@ public class UserService {
 			if(mailOTPService.verifiedEmails.contains(email)){
 				Users user=userRepo.findUsersByEmail(email);
 				user.setPassword(passwordEncoder.encode(request.getNewPassword()));
+				user.setTokenIssueTime(LocalDateTime.now());
+				userRepo.save(user);
+				return true;
+			}
+			return false;
+		}
+		
+		public boolean resetPassword(ForgotPassword request) {
+			if(!request.getPassword().equals(request.getConfirmPassword()))
+				return false;
+			if(mailOTPService.verifiedEmails.contains(request.getEmail())){
+				Users user=userRepo.findUsersByEmail(request.getEmail());
+				user.setPassword(passwordEncoder.encode(request.getPassword()));
+				user.setTokenIssueTime(LocalDateTime.now());
 				userRepo.save(user);
 				return true;
 			}

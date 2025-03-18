@@ -1,6 +1,7 @@
 package com.arpankundu.journalApp.services;
 
 import java.security.NoSuchAlgorithmException;
+import java.sql.Timestamp;
 import java.util.Base64;
 import java.util.Date;
 import java.util.HashMap;
@@ -10,8 +11,12 @@ import java.util.function.Function;
 import javax.crypto.KeyGenerator;
 import javax.crypto.SecretKey;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
+
+import com.arpankundu.journalApp.models.Users;
+import com.arpankundu.journalApp.repository.UserRepo;
 
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
@@ -20,6 +25,9 @@ import io.jsonwebtoken.security.Keys;
 
 @Service
 public class JwtService {
+	
+    @Autowired
+    private UserRepo userRepository;
 
 private String secretKey="";
 	
@@ -66,15 +74,27 @@ private String secretKey="";
 				.build().parseSignedClaims(token).getPayload();
 		}
 
-	public boolean validateToken(String token, UserDetails userDetails) {
-		final String userName=extractUsername(token);
-		return (userName.equals(userDetails.getUsername())&&!isTokenExpired(token));
-	}
+    public boolean validateToken(String token, UserDetails userDetails) {
+        final String username = extractUsername(token);
+        Users user = userRepository.findUsersByUsername(username);
+        if(user==null)
+        	throw new RuntimeException("User not found!!");
+        Date tokenIssuedAt = extractIssuedAt(token);
+
+        if (user.getTokenIssueTime() != null &&
+                tokenIssuedAt.before(Timestamp.valueOf(user.getTokenIssueTime()))) {
+            return false; // Token is invalid
+        }
+
+        return (username.equals(userDetails.getUsername()) && !isTokenExpired(token));
+    }
 	private boolean isTokenExpired(String token) {
 		return extractExpiration(token).before(new Date());
 	}
 	private Date extractExpiration(String token) {
 		return extractClaim(token,Claims::getExpiration);
 	}
-
+    private Date extractIssuedAt(String token) {
+        return extractClaim(token, Claims::getIssuedAt);
+    }
 }

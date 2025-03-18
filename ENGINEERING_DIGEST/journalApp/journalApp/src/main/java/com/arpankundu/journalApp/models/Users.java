@@ -1,6 +1,7 @@
 package com.arpankundu.journalApp.models;
 
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -57,6 +58,8 @@ public class Users {
 	@OneToMany(mappedBy="users",cascade=CascadeType.PERSIST)
 	private List<JournalEntry> journals=new ArrayList<>();
 	
+	private LocalDateTime tokenIssueTime;
+	
 	public List<JournalEntry> getJournals() {
 		return journals;
 	}
@@ -105,5 +108,11 @@ public class Users {
 	}
 	public void setMobileNo(String mobileNo) {
 		MobileNo = mobileNo;
+	}
+	public LocalDateTime getTokenIssueTime() {
+		return tokenIssueTime;
+	}
+	public void setTokenIssueTime(LocalDateTime tokenIssueTime) {
+		this.tokenIssueTime = tokenIssueTime;
 	}
 }

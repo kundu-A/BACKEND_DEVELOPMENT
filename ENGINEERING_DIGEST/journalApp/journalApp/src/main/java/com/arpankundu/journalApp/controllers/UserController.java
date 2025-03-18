@@ -135,12 +135,36 @@ public class UserController {
 	    @PostMapping("/forgot-password")
 	    public ResponseEntity<?> forgotPassword(@RequestBody ForgotPassword request){
 	    	try {
-	    		emailService.alertEmail(request.getEmail());
 	    		String email=request.getEmail();
-	    		String password=request.getPassword();
-	    		if(userRepo.existsByEmail(email))
-	    			return new ResponseEntity<>(userService.forgotPassword(email,password),HttpStatus.OK);
-	    		return new ResponseEntity<>("Provided email is not registered!!",HttpStatus.BAD_REQUEST);
+	    		if(userRepo.existsByEmail(email)){
+	    			emailService.alertEmail(request.getEmail());
+	    			return new ResponseEntity<>("The otp is sent successfully!!",HttpStatus.OK);
+	    		}
+	    		return new ResponseEntity<>("This email is not registered to do this action.",HttpStatus.BAD_REQUEST);
+	    	}catch(Exception e) {
+	    		System.out.println(e.getMessage());
+	    		return new ResponseEntity<>("Some internal issues!!",HttpStatus.INTERNAL_SERVER_ERROR);
+	    	}
+	    }
+	    
+	    @PostMapping("/forgotPassword-otp-verification")
+	    public ResponseEntity<?> forgotPasswordOtpVerification(@RequestBody MailOTP request){
+	    	try {
+	    		if(mailOTPService.verifyOTP(request))
+	    			return new ResponseEntity<>("OTP verification done successfully!!",HttpStatus.OK);
+	    		return new ResponseEntity<>("Please enter the valid otp/email",HttpStatus.BAD_REQUEST);
+	    	}catch(Exception e) {
+	    		System.out.println(e.getMessage());
+	    		return new ResponseEntity<>("Some internal issues!!",HttpStatus.INTERNAL_SERVER_ERROR);
+	    	}
+	    }
+	    
+	    @PostMapping("/forgotPassword-set-password")
+	    public ResponseEntity<?> setPassword(@RequestBody ForgotPassword request){
+	    	try {
+	    		if(userService.resetPassword(request)) 
+	    			return new ResponseEntity<>("Password is changed successfully!!",HttpStatus.OK);
+	    		return new ResponseEntity<>("Please enter valid details!!",HttpStatus.BAD_REQUEST);
 	    	}catch(Exception e) {
 	    		System.out.println(e.getMessage());
 	    		return new ResponseEntity<>("Some internal issues!!",HttpStatus.INTERNAL_SERVER_ERROR);

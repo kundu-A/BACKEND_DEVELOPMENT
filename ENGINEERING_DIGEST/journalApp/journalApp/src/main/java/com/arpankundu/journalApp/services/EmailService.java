@@ -49,7 +49,9 @@ public class EmailService {
 	        MimeMessageHelper helper = new MimeMessageHelper(message, true, "UTF-8");
 	        
 	        String otp = mailService.generateOTP(mailRequest.getEmail());
-	        String name=userRepo.findUsersByEmail(mailRequest.getEmail()).getName();
+	        String name="User";
+	        if(userRepo.existsByEmail(mailRequest.getEmail()))
+	        	name=userRepo.findUsersByEmail(mailRequest.getEmail()).getName();
 
 	        String htmlContent = "<div style='font-family: Arial, sans-serif; padding: 15px; border: 1px solid #ddd; border-radius: 10px;'>"
 	                            + "<h2 style='color: #2c3e50;'>One-Time Password (OTP) Verification</h2>"
@@ -193,7 +195,7 @@ public class EmailService {
 	                + "</div>";
 
 	        helper.setTo(email);
-	        helper.setSubject("Your Request if fullfilled now!!");
+	        helper.setSubject("Your Request is fullfilled now!!");
 	        helper.setText(htmlContent, true);
 	        helper.setFrom(fromMail);
 	        

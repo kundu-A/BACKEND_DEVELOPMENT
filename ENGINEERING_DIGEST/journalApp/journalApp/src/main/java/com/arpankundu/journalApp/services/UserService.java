@@ -113,16 +113,6 @@ public class UserService {
 	    		return "Some issues aries!!";
 	    	}
 	    }
-
-		public String forgotPassword(String email, String password) {
-				if(mailOTPService.verifiedEmails.contains(email)){
-					Users user=userRepo.findUsersByEmail(email);
-					user.setPassword(passwordEncoder.encode(password));
-					userRepo.save(user);
-					return "Password is saved successfully!!";
-				}
-				 throw new EmailNotVerifiedException("Email verification required.");
-		}
 		
 		public boolean changePassword(ChangePassword request) {
 			String newPassword=passwordEncoder.encode(request.getNewPassword());

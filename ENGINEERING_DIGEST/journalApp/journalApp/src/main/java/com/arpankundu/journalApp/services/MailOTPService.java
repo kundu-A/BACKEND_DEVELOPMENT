@@ -26,6 +26,7 @@ public class MailOTPService {
 	private Map<String,String> otpMap=new ConcurrentHashMap<>();
 	private Map<String, Long> otpExpiryMap = new ConcurrentHashMap<>();
 	Set<String> verifiedEmails = Collections.newSetFromMap(new ConcurrentHashMap<>());
+	private Map<String, Integer> otpAttempts = new ConcurrentHashMap<>();
 
 
 	public String generateOTP(String toEmail) {
@@ -35,6 +36,7 @@ public class MailOTPService {
 	        String hashedOtp = OTPUtil.hashOTP(otp);
 	        otpMap.put(toEmail,hashedOtp);
 	        otpExpiryMap.put(toEmail, System.currentTimeMillis() + (1 * 60 * 1000)); //1 min valid.
+	        otpAttempts.put(toEmail, 0);
 	        return otp;
 		}catch(Exception e) {
 			System.out.println(e.getMessage());
@@ -53,14 +55,25 @@ public class MailOTPService {
 		        otpExpiryMap.remove(email);
 		        throw new OTPExpiredException("OTP has expired");
 		    }
+		    
+	        int attempts = otpAttempts.getOrDefault(email, 0);
+	        if (attempts >= 3) {
+	            otpMap.remove(email);
+	            otpExpiryMap.remove(email);
+	            otpAttempts.remove(email);
+	            throw new InvalidOTPException("Too many failed attempts. Please request a new OTP.");
+	        }
+	        
 		    String enteredHashedOtp = OTPUtil.hashOTP(mailRequest.getOtp());
 		    if(enteredHashedOtp.equals(otpMap.get(email))) {
 		    	verifiedEmails.add(email);
 		    	otpExpiryMap.remove(email);
 		    	otpMap.remove(email);
+		    	otpAttempts.remove(email);
 		    	return true;
 		    }
-		    throw new InvalidOTPException("Invalid OTP entered");
+		    otpAttempts.put(email, attempts + 1);
+		    throw new InvalidOTPException("Invalid OTP entered , Attempts left: "+(3 - (attempts + 1)));
 		}catch(Exception e) {
 				System.out.println(e.getMessage());
 				return false;

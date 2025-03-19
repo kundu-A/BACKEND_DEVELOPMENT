@@ -162,8 +162,10 @@ public class UserController {
 	    @PostMapping("/forgotPassword-set-password")
 	    public ResponseEntity<?> setPassword(@RequestBody ForgotPassword request){
 	    	try {
-	    		if(userService.resetPassword(request)) 
+	    		if(userService.resetPassword(request)) {
+	    			emailService.successfullPasswordChangingMail(request.getEmail());
 	    			return new ResponseEntity<>("Password is changed successfully!!",HttpStatus.OK);
+	    		}
 	    		return new ResponseEntity<>("Please enter valid details!!",HttpStatus.BAD_REQUEST);
 	    	}catch(Exception e) {
 	    		System.out.println(e.getMessage());

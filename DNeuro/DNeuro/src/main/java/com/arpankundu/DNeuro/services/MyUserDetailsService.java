@@ -8,13 +8,13 @@ import org.springframework.stereotype.Service;
 
 import com.arpankundu.DNeuro.models.UserPrinciple;
 import com.arpankundu.DNeuro.models.Users;
-import com.arpankundu.DNeuro.repository.UserRepo;
+import com.arpankundu.DNeuro.repository.PublicRepo;
 
 @Service
 public class MyUserDetailsService implements UserDetailsService{
 
 	@Autowired
-	private UserRepo userRepo;
+	private PublicRepo userRepo;
 	
 	@Override
 	public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {

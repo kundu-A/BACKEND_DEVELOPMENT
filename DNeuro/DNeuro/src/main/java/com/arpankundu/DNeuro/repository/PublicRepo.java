@@ -6,7 +6,12 @@ import org.springframework.stereotype.Repository;
 import com.arpankundu.DNeuro.models.Users;
 
 @Repository
-public interface UserRepo extends JpaRepository<Users, Integer>{
+public interface PublicRepo extends JpaRepository<Users, Integer>{
 
 	Users findByUsername(String name);
+
+	Users findUsersByEmail(String email);
+
+	boolean existsByEmail(String email);
+
 }

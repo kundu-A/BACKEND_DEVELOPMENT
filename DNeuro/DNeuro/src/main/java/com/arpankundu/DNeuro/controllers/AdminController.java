@@ -1,5 +1,7 @@
 package com.arpankundu.DNeuro.controllers;
 
+import com.arpankundu.DNeuro.models.Disease;
+import com.arpankundu.DNeuro.services.DiseaseServices;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -15,6 +17,8 @@ import com.arpankundu.DNeuro.services.UtilityService;
 
 import jakarta.validation.Valid;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("/admin")
 public class AdminController {
@@ -27,6 +31,9 @@ public class AdminController {
 	
 	@Autowired
 	private AdminService adminService;
+
+    @Autowired
+    private DiseaseServices diseaseService;
 	
 	@PostMapping("/register")
     public ResponseEntity<?> register(@RequestBody @Valid Users user) {
@@ -38,6 +45,24 @@ public class AdminController {
         } catch (Exception e) {
             System.out.println(e.getMessage());
             return new ResponseEntity<>("Admin Registration Unsuccessful",HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    @PostMapping("/set-multiple-record")
+    public ResponseEntity<?> setDiseaseDetails(@Valid @RequestBody List<Disease> diseases){
+        try {
+            return new ResponseEntity<>(diseaseService.setDiseaseDetails(diseases),HttpStatus.CREATED);
+        }catch(Exception e) {
+            return new ResponseEntity<>("Something problem is happing internally!!",HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    @PostMapping("/set-single-record")
+    public ResponseEntity<?> setOneDisease(@Valid @RequestBody Disease disease){
+        try {
+            return new ResponseEntity<>(diseaseService.setOneDisease(disease), HttpStatus.CREATED);
+        }catch(Exception e) {
+            return new ResponseEntity<>("Something problem is happing internally!!" , HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 }

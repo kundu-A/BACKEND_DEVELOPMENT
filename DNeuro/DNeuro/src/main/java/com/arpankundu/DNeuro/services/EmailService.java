@@ -56,7 +56,8 @@ public class EmailService {
 	public String getEmailSubject() {
 	    return "🎉 Registration Successful - DNeuro Application";
 	}
-	
+
+	@Async
 	public void sendOTP(OTP request) {
 	    try {
 	        MimeMessage message = javaMailSender.createMimeMessage();
@@ -73,7 +74,7 @@ public class EmailService {
 	                            + "<p style='font-size: 16px;'>Your OTP for email verification is: "
 	                            + "<strong style='color: #e74c3c; font-size: 20px;'>" + otp + "</strong></p>"
 	                            + "<p style='font-size: 14px; color: #7f8c8d;'>This OTP is valid for 1 minutes. Do not share it with anyone.</p>"
-	                            + "<p style='margin-top: 20px;'>Regards,<br><strong>Journal-Application Team</strong></p>"
+	                            + "<p style='margin-top: 20px;'>Regards,<br><strong>DNeuro Team</strong></p>"
 	                            + "</div>";
 
 	        helper.setTo(request.getEmail());
@@ -101,7 +102,7 @@ public class EmailService {
 	                + "<p style='font-size: 16px;'>Dear "+name+",</p>"
 	                + "<p style='font-size: 16px;'>You have successfully changed your password. If this was you, no further action is needed.</p>"
 	                + "<p style='font-size: 14px; color: #7f8c8d;'>If you did not request this change, please reset your password immediately or contact support.</p>"
-	                + "<p style='margin-top: 20px;'>Regards,<br><strong>Journal-Application Team</strong></p>"
+	                + "<p style='margin-top: 20px;'>Regards,<br><strong>DNeuro Team</strong></p>"
 	                + "</div>";
 
 	        helper.setTo(email);

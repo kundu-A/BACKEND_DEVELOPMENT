@@ -23,27 +23,10 @@ import jakarta.validation.Valid;
 public class DiseaseControllers {
 
 	@Autowired
-	DiseaseServices diseaseService;
+	private DiseaseServices diseaseService;
+
 	
-	@PostMapping("/setmultiplerecord")
-	public ResponseEntity<?> setDiseaseDetails(@Valid @RequestBody List<Disease> diseases){
-		try {
-			return new ResponseEntity<>(diseaseService.setDiseaseDetails(diseases),HttpStatus.CREATED);
-		}catch(Exception e) {
-			return new ResponseEntity<>("Something problem is happing internally!!",HttpStatus.INTERNAL_SERVER_ERROR);
-		}
-	}
-	
-	@PostMapping("/setsinglerecord")
-	public ResponseEntity<?> setOneDisease(@Valid @RequestBody Disease disease){
-		try {
-			return new ResponseEntity<>(diseaseService.setOneDisease(disease), HttpStatus.CREATED);
-		}catch(Exception e) {
-			return new ResponseEntity<>("Something problem is happing internally!!" , HttpStatus.INTERNAL_SERVER_ERROR);
-		}
-	}
-	
-	@GetMapping("/getmultiplerecord")
+	@GetMapping("/get-multiple-record")
 	public ResponseEntity<?> getDiseaseDetails(){
 		try {
 			List<Disease> result=diseaseService.getDiseaseDetails();
@@ -57,7 +40,7 @@ public class DiseaseControllers {
 		}
 	}
 	
-	@GetMapping("/getsinglerecord/{id}")
+	@GetMapping("/get-single-record/{id}")
 	public ResponseEntity<?> getOneDisease(@PathVariable Integer id){
 		try {
 			Optional<Disease> result = diseaseService.getOneDisease(id);
@@ -71,7 +54,7 @@ public class DiseaseControllers {
 		}
 	}
 	
-	@GetMapping("/getallnames")
+	@GetMapping("/get-all-names")
 	public ResponseEntity<?> getDiseaseName(){
 		try {
 			List<String> result = diseaseService.getDiseaseName();
@@ -85,8 +68,8 @@ public class DiseaseControllers {
 		}
 	}
 	
-	@GetMapping("/search/{text}")
-	public ResponseEntity<?> searchEngine(@PathVariable String text){
+	@GetMapping("/search")
+	public ResponseEntity<?> searchEngine(@RequestBody String text){
 		try {
 			List<Disease> result = diseaseService.searchEngine(text);
 			if(result.isEmpty()) {
@@ -98,8 +81,8 @@ public class DiseaseControllers {
 			return new ResponseEntity<>("Somthing problem is happing internally!!", HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 	}
-	@GetMapping("/searchByAlphabate/{text}")
-	public ResponseEntity<?> searchByAlphabate(@PathVariable String text){
+	@GetMapping("/search-by-alphabet")
+	public ResponseEntity<?> searchByAlphabate(@RequestBody String text){
 		try {
 			List<Disease> result=diseaseService.searchByAlphabate(text);
 			if(result.isEmpty()) {

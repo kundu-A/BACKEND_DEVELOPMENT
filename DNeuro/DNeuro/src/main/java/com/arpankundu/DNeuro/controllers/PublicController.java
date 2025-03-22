@@ -5,6 +5,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.arpankundu.DNeuro.models.Users;
@@ -15,6 +16,7 @@ import com.arpankundu.DNeuro.services.UtilityService;
 import jakarta.validation.Valid;
 
 @RestController
+@RequestMapping("/public")
 public class PublicController {
 
 	@Autowired
@@ -26,7 +28,7 @@ public class PublicController {
 	@Autowired
 	private PublicRepo userRepo;
 	
-	@PostMapping("register")
+	@PostMapping("/register")
 	public ResponseEntity<?> register(@RequestBody @Valid Users user) {
         try {
             String username = utilityService.extractUsernameFromEmail(user);
@@ -42,7 +44,7 @@ public class PublicController {
         }
 
     }
-	@PostMapping("login")
+	@PostMapping("/login")
 	public ResponseEntity<?> login(@RequestBody @Valid Users user) {
         try {
             return new ResponseEntity<>(userService.verify(user), HttpStatus.OK);

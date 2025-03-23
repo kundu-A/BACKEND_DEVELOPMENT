@@ -1,4 +1,4 @@
-package com.arpankundu.journalApp.Configuration;
+package com.arpankundu.journalApp.configuration;
 
 import java.io.IOException;
 

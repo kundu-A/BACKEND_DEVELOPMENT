@@ -82,12 +82,12 @@ public class UserService {
 	        			);
 	        	if (authentication.isAuthenticated()) {
 	        		String token=jwtService.generateToken(username);
+					Users existingUser = userRepo.findUsersByUsername(username);
 	        		if(token!=null) {
-						Users existingUser = userRepo.findUsersByUsername(username);
 						existingUser.setTokenIssueTime(LocalDateTime.now());
 						userRepo.save(existingUser);
 					}
-	        		System.out.println(user.getTokenIssueTime());
+	        		System.out.println(existingUser.getTokenIssueTime());
 	        		return token;
 	        	}
 	        }catch(Exception e) {

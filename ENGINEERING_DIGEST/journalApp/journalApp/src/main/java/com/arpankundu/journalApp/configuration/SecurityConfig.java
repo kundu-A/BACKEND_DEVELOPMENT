@@ -20,6 +20,8 @@ import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 import com.arpankundu.journalApp.services.MyUserServiceDetails;
+import org.springframework.web.servlet.config.annotation.CorsRegistry;
+import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 @Configuration
 @EnableWebSecurity
@@ -32,13 +34,12 @@ public class SecurityConfig{
 	@Autowired
 	JwtAuthenticationFilter jwtAuthenticationFilter;
 	
-	@Bean
-    @Order(1)
+	/*@Bean
 	public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
 		return http
                 .securityMatcher("/**")
 				.csrf(AbstractHttpConfigurer::disable)
-                .httpBasic(Customizer.withDefaults())
+                //.httpBasic(Customizer.withDefaults())
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
 				.authorizeHttpRequests(request->request
 				.requestMatchers("/user/**").permitAll()
@@ -47,10 +48,9 @@ public class SecurityConfig{
 				.anyRequest().authenticated())
 				.addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
 				.build();
-	}
+	}*/
 
 	@Bean
-    @Order(2)
 	public SecurityFilterChain oauth2SecurityFilterChain(HttpSecurity http)throws  Exception{
 		http.csrf(AbstractHttpConfigurer::disable)
                 .securityMatcher("/oauth2/**","/login/oauth2/code/**")
@@ -60,9 +60,23 @@ public class SecurityConfig{
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED))
 				.oauth2Login(oauth2->oauth2
                         //.loginPage("/oauth2/login")
-                        .defaultSuccessUrl("/greet",true));
+                        .defaultSuccessUrl("http://localhost:3000/dashboard",true));
 
 		return  http.build();
+	}
+
+	@Bean
+	public WebMvcConfigurer corsConfigurer() {
+		return new WebMvcConfigurer() {
+			@Override
+			public void addCorsMappings(CorsRegistry registry) {
+				registry.addMapping("/**")
+						.allowedOrigins("http://localhost:3000")
+						.allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS")
+						.allowedHeaders("*")
+						.allowCredentials(true);
+			}
+		};
 	}
 
 	@Bean

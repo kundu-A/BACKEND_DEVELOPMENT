@@ -2,13 +2,7 @@ package com.arpankundu.DNeuro.models;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 
 @Entity
@@ -20,26 +14,36 @@ public class Disease {
 	private Integer id;
 	@NotBlank(message="Disease Name can't be null")
 	private String diseaseName;
-	@NotBlank(message="Exising Drug can't be null")
+	@Lob
+	@Column(columnDefinition = "TEXT")
+	@NotBlank(message="Disease Definition can't be null")
+	private String definition;
+
+	@Lob
+	@Column(columnDefinition = "TEXT")
+	@NotBlank(message="Existing Drug can't be null")
 	private String existingDrugs;
+
+	@Lob
+	@Column(columnDefinition = "TEXT")
 	@NotBlank(message="New Drugs can't be null")
 	private String newDurgs;
+
+	@Lob
+	@Column(columnDefinition = "TEXT")
 	@NotBlank(message="Treatment can't be null")
 	private String treatment;
+
+	@Lob
+	@Column(columnDefinition = "TEXT")
+	@NotBlank(message="Diagnosis can't be null")
+	private String diagnosis;
+
+	@Lob
+	@Column(columnDefinition = "TEXT")
 	@NotBlank(message="New Advances can't be null")
 	private String newAdvances;
-	
-	@ManyToOne
-	@JoinColumn(name="user_id",nullable=false)
-	@JsonIgnore
-	private Users users;
-	
-	public Users getUsers() {
-		return users;
-	}
-	public void setUsers(Users users) {
-		this.users = users;
-	}
+
 	public Integer getId() {
 		return id;
 	}
@@ -76,6 +80,23 @@ public class Disease {
 	public void setNewAdvances(String newAdvances) {
 		this.newAdvances = newAdvances;
 	}
+
+	public String getDefinition() {
+		return definition;
+	}
+
+	public void setDefinition(String definition) {
+		this.definition = definition;
+	}
+
+	public String getDiagnosis() {
+		return diagnosis;
+	}
+
+	public void setDiagnosis(String diagnosis) {
+		this.diagnosis = diagnosis;
+	}
+
 	public Disease() {
 		
 	}

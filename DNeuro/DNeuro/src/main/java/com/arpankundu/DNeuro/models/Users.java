@@ -50,20 +50,10 @@ public class Users {
 	@NotBlank(message="Name name can't be null")
 	private String name;
 	
-	@Column(name="journal_entries")
-	@OneToMany(mappedBy="users",cascade=CascadeType.PERSIST)
-	private List<Disease> journals=new ArrayList<>();
-	
 	private LocalDateTime tokenIssueTime;
 	
 	public Integer getId() {
 		return id;
-	}
-	public List<Disease> getJournals() {
-		return journals;
-	}
-	public void setJournals(List<Disease> journals) {
-		this.journals = journals;
 	}
 	public void setId(Integer id) {
 		this.id = id;

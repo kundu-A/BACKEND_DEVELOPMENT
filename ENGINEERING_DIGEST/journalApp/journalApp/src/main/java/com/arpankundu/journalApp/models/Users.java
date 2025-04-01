@@ -57,8 +57,7 @@ public class Users {
 	@Column(name="journal_entries")
 	@OneToMany(mappedBy="users",cascade=CascadeType.PERSIST)
 	private List<JournalEntry> journals=new ArrayList<>();
-	
-	private LocalDateTime tokenIssueTime;
+
 	
 	public List<JournalEntry> getJournals() {
 		return journals;
@@ -108,11 +107,5 @@ public class Users {
 	}
 	public void setMobileNo(String mobileNo) {
 		MobileNo = mobileNo;
-	}
-	public LocalDateTime getTokenIssueTime() {
-		return tokenIssueTime;
-	}
-	public void setTokenIssueTime(LocalDateTime tokenIssueTime) {
-		this.tokenIssueTime = tokenIssueTime;
 	}
 }

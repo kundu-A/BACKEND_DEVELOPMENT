@@ -14,6 +14,7 @@ import java.util.Map;
 
 @RestController
 @RequestMapping("/oauth2")
+@CrossOrigin(origins = "http://localhost:3000")
 public class Oauth2Controller {
 
     @GetMapping("/login")

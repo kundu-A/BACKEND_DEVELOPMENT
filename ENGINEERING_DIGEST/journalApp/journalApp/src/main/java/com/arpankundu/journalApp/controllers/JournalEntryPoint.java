@@ -3,10 +3,12 @@ package com.arpankundu.journalApp.controllers;
 import java.util.List;
 import java.util.Optional;
 
+import com.arpankundu.journalApp.configuration.SecurityConfig;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -37,9 +39,10 @@ public class JournalEntryPoint {
 	
 	//Get All Records : http:8080/journal/get
 	@GetMapping("/get")
-	public ResponseEntity<?> getEntry(@AuthenticationPrincipal UserPrinciple principle){
+	public ResponseEntity<?> getEntry(){
 		try {
-			Users loggedUser=userRepo.findUsersByUsername(principle.getUsername());
+			String username= SecurityContextHolder.getContext().getAuthentication().getName();
+			Users loggedUser=userRepo.findUsersByUsername(username);
 			if(loggedUser==null)
 				return new ResponseEntity<>("User not found!!",HttpStatus.UNAUTHORIZED);
 			List<JournalEntry> entries=journalServices.getEntry(loggedUser);
@@ -55,9 +58,10 @@ public class JournalEntryPoint {
 	
 	//Set A Record : http:8080/journal/set
 	@PostMapping("/set")
-	public ResponseEntity<?> createEntry(@RequestBody @Valid JournalEntry journalEntry,@AuthenticationPrincipal UserPrinciple principle){
+	public ResponseEntity<?> createEntry(@RequestBody @Valid JournalEntry journalEntry){
 		try {
-			Users loggedUser=userRepo.findUsersByUsername(principle.getUsername());
+			String username= SecurityContextHolder.getContext().getAuthentication().getName();
+			Users loggedUser=userRepo.findUsersByUsername(username);
 			System.out.println(loggedUser);
 			if(loggedUser==null)
 				return new ResponseEntity<>("User not found!!",HttpStatus.UNAUTHORIZED);
@@ -74,9 +78,10 @@ public class JournalEntryPoint {
 	
 	//Get A Record By Id : http:8080/journal/get/1
 	@GetMapping("/get/{id}")
-	public ResponseEntity<?> getEntryById(@PathVariable Integer id,@AuthenticationPrincipal UserPrinciple principle){
+	public ResponseEntity<?> getEntryById(@PathVariable Integer id){
 		try {
-			Users loggedUser=userRepo.findUsersByUsername(principle.getUsername());
+			String username= SecurityContextHolder.getContext().getAuthentication().getName();
+			Users loggedUser=userRepo.findUsersByUsername(username);
 			if(loggedUser==null)
 				return new ResponseEntity<>("User not found!!",HttpStatus.UNAUTHORIZED);
 			Optional<JournalEntry> elementById=journalServices.getEntryById(id,loggedUser);
@@ -92,9 +97,10 @@ public class JournalEntryPoint {
 	
 	//Delete A Record By Id : http:8080/journal/delete/1
 	@DeleteMapping("/delete/{id}")
-	public ResponseEntity<?> deleteById(@PathVariable Integer id,@AuthenticationPrincipal UserPrinciple principle){
+	public ResponseEntity<?> deleteById(@PathVariable Integer id){
 		try {
-			Users loggedUser=userRepo.findUsersByUsername(principle.getUsername());
+			String username= SecurityContextHolder.getContext().getAuthentication().getName();
+			Users loggedUser=userRepo.findUsersByUsername(username);
 			if(loggedUser==null)
 				return new ResponseEntity<>("User not found!!",HttpStatus.UNAUTHORIZED);
 			boolean isDeleted=journalServices.deleteById(id,loggedUser);
@@ -109,9 +115,10 @@ public class JournalEntryPoint {
 	
 	//Get Update Record By Id : http:8080/journal/update/1
 	@PutMapping("/update/{id}")
-	public ResponseEntity<?> updateById(@PathVariable Integer id , @RequestBody @Valid JournalEntry journalEntry,@AuthenticationPrincipal UserPrinciple principle){
+	public ResponseEntity<?> updateById(@PathVariable Integer id , @RequestBody @Valid JournalEntry journalEntry){
 		try {
-			Users loggedUser=userRepo.findUsersByUsername(principle.getUsername());
+			String username= SecurityContextHolder.getContext().getAuthentication().getName();
+			Users loggedUser=userRepo.findUsersByUsername(username);
 			if(loggedUser==null)
 				return new ResponseEntity<>("User not found!!",HttpStatus.UNAUTHORIZED);
 			boolean elementById=journalServices.updateEntryById(id,journalEntry,loggedUser);

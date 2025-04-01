@@ -1,5 +1,7 @@
 package com.arpankundu.journalApp.controllers;
 
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -34,13 +36,13 @@ public class LoggedInUserController {
 	MailOTPService mailOTPService;
 
 	@PostMapping("/change-password")
-	public ResponseEntity<?> changePassword(@RequestBody ChangePassword request){
+	public ResponseEntity<?> changePassword(@RequestBody ChangePassword request , HttpServletRequest req, HttpServletResponse res){
 		try {
-			if(userService.changePassword(request)) {
+			if(userService.changePassword(request,req,res)) {
 				emailService.successfullPasswordChangingMail(getEmailId());
-				return new ResponseEntity<>("Password changed successfully!!",HttpStatus.OK);
+				return new ResponseEntity<>("Password changed successfully - Login again please , your token has expired!!",HttpStatus.OK);
 			}
-			return new ResponseEntity<>("Please enter valid credintials!!",HttpStatus.BAD_REQUEST);
+			return new ResponseEntity<>("Please enter valid credentials!!",HttpStatus.BAD_REQUEST);
 		}catch(Exception e) {
 			System.out.println(e.getMessage());
 			return new ResponseEntity<>("Some internal problem!!",HttpStatus.INTERNAL_SERVER_ERROR);

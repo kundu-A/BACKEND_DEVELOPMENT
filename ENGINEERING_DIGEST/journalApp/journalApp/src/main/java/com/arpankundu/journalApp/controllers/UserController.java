@@ -1,5 +1,7 @@
 package com.arpankundu.journalApp.controllers;
 
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -80,9 +82,9 @@ public class UserController {
 	     */
 	    
 	    @PostMapping("/login")
-	    public ResponseEntity<?> login(@RequestBody @Valid Users user) {
+	    public ResponseEntity<?> login(@RequestBody @Valid Users user, HttpServletResponse response) {
 	        try {
-	            return new ResponseEntity<>(userService.verify(user), HttpStatus.OK);
+	            return new ResponseEntity<>(userService.verify(user,response), HttpStatus.OK);
 	        } catch (Exception e) {
 	        	System.out.println(e.getMessage());
 	            return new ResponseEntity<>("Login Failed...", HttpStatus.INTERNAL_SERVER_ERROR);
@@ -172,4 +174,17 @@ public class UserController {
 	    		return new ResponseEntity<>("Some internal issues!!",HttpStatus.INTERNAL_SERVER_ERROR);
 	    	}
 	    }
+
+		@PostMapping("/refresh-button")
+		public ResponseEntity<?> refreshButton(HttpServletRequest request,HttpServletResponse response){
+			try {
+				String token=userService.refreshButton(request,response);
+				if(token!=null)
+					return new ResponseEntity<>("Token is generated successfully!!",HttpStatus.OK);
+				return  new ResponseEntity<>(token,HttpStatus.BAD_REQUEST);
+			}catch(Exception e){
+				System.out.println(e.getMessage());
+				return new ResponseEntity<>("Internal Issues",HttpStatus.INTERNAL_SERVER_ERROR);
+			}
+		}
 }

@@ -35,12 +35,13 @@ private String secretKey="";
 		try {
 			KeyGenerator keyGen=KeyGenerator.getInstance("HmacSHA256");
 			SecretKey sk=keyGen.generateKey();
-			secretKey=Base64.getEncoder().encodeToString(sk.getEncoded());
+			secretKey=Base64.getUrlEncoder().encodeToString(sk.getEncoded());
 		} catch (NoSuchAlgorithmException e) {
 			throw new RuntimeException(e);
 		}	
 	}
-	
+
+	//Generate Access token
 	public String generateToken(String username) {
 		Map<String, Object> claims=new HashMap<>();
 		
@@ -56,14 +57,41 @@ private String secretKey="";
 				.compact();
 	}
 
+	//Validate Access Token
+	public boolean validateToken(String token, UserDetails userDetails) {
+		final String userName = extractUsername(token);
+		return (userName.equals(userDetails.getUsername()) && !isTokenExpired(token));
+	}
+
+	//Generate Refresh Token
+	public String generateRefreshToken(String username) {
+		return Jwts.builder()
+				.subject(username)
+				.issuedAt(new Date(System.currentTimeMillis()))
+				.expiration(new Date(System.currentTimeMillis() + 7 * 24 * 60 * 60 * 1000))// 7 days expiration
+				.signWith(getKey())
+				.compact();
+	}
+
+	//Validate Refresh Token
+	public boolean validateRefreshToken(String token) {
+		return !isTokenExpired(token);
+	}
+
 	private SecretKey getKey() {
-		byte keyBytes[]=Decoders.BASE64.decode(secretKey);
+		byte keyBytes[]=Base64.getUrlDecoder().decode(secretKey);
 		return Keys.hmacShaKeyFor(keyBytes);
 	}
 
 	public String extractUsername(String token) {
-		return extractClaim(token,Claims::getSubject);
+		try {
+			return extractClaim(token, Claims::getSubject);
+		}catch(Exception e){
+			System.out.println(e.getMessage());
+			return  null;
+		}
 	}
+
 	private<T> T extractClaim(String token,Function<Claims,T> claimResolver) {
 		final Claims claims=extractAllClaims(token);
 		return claimResolver.apply(claims);
@@ -72,29 +100,18 @@ private String secretKey="";
 		return Jwts.parser()
 					.verifyWith(getKey())
 				.build().parseSignedClaims(token).getPayload();
-		}
+	}
 
-    public boolean validateToken(String token, UserDetails userDetails) {
-        final String username = extractUsername(token);
-        Users user = userRepository.findUsersByUsername(username);
-        if(user==null)
-        	throw new RuntimeException("User not found!!");
-        Date tokenIssuedAt = extractIssuedAt(token);
-
-        if (user.getTokenIssueTime() != null &&
-                tokenIssuedAt.before(Timestamp.valueOf(user.getTokenIssueTime()))) {
-            return false; // Token is invalid
-        }
-
-        return (username.equals(userDetails.getUsername()) && !isTokenExpired(token));
-    }
 	private boolean isTokenExpired(String token) {
 		return extractExpiration(token).before(new Date());
 	}
 	private Date extractExpiration(String token) {
 		return extractClaim(token,Claims::getExpiration);
 	}
-    private Date extractIssuedAt(String token) {
-        return extractClaim(token, Claims::getIssuedAt);
-    }
+	private Date extractIssueTime(String token) {
+		return extractClaim(token, Claims::getIssuedAt);
+	}
+	public boolean isRefreshTokenExpired(String token) {
+		return extractExpiration(token).before(new Date());
+	}
 }

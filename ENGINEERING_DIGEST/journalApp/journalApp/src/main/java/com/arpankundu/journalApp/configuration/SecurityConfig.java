@@ -34,32 +34,30 @@ public class SecurityConfig{
 	@Autowired
 	JwtAuthenticationFilter jwtAuthenticationFilter;
 	
-	/*@Bean
+	@Bean
 	public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
 		return http
                 .securityMatcher("/**")
 				.csrf(AbstractHttpConfigurer::disable)
-                //.httpBasic(Customizer.withDefaults())
+                .httpBasic(Customizer.withDefaults())
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
 				.authorizeHttpRequests(request->request
-				.requestMatchers("/user/**").permitAll()
+				.requestMatchers("/user/**","/greet/**").permitAll()
 				.requestMatchers("/journal/**","/otp/**","/logged-user/**").hasAnyRole("USER","ADMIN")
 				.requestMatchers("/admin/**").hasRole("ADMIN")
 				.anyRequest().authenticated())
 				.addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
 				.build();
-	}*/
+	}
 
 	@Bean
 	public SecurityFilterChain oauth2SecurityFilterChain(HttpSecurity http)throws  Exception{
 		http.csrf(AbstractHttpConfigurer::disable)
-                .securityMatcher("/oauth2/**","/login/oauth2/code/**")
+                .securityMatcher("/oauth2/**","/login/oauth2/code/**", "/oauth2/authorization/**")
 				.authorizeHttpRequests(request -> request
-                        //.requestMatchers("/oauth2/login").permitAll()
                         .anyRequest().authenticated())
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED))
 				.oauth2Login(oauth2->oauth2
-                        //.loginPage("/oauth2/login")
                         .defaultSuccessUrl("http://localhost:3000/dashboard",true));
 
 		return  http.build();

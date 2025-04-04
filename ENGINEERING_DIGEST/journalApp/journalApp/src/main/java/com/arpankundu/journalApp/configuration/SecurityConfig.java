@@ -3,7 +3,6 @@ package com.arpankundu.journalApp.configuration;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.core.annotation.Order;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
@@ -53,7 +52,7 @@ public class SecurityConfig{
 	@Bean
 	public SecurityFilterChain oauth2SecurityFilterChain(HttpSecurity http)throws  Exception{
 		http.csrf(AbstractHttpConfigurer::disable)
-                .securityMatcher("/oauth2/**","/login/oauth2/code/**", "/oauth2/authorization/**")
+                .securityMatcher("/oauth2/**","/login/oauth2/code/**")
 				.authorizeHttpRequests(request -> request
                         .anyRequest().authenticated())
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED))

@@ -2,6 +2,7 @@ package com.arpankundu.journalApp.services;
 
 import java.time.LocalDateTime;
 import java.util.Date;
+import java.util.UUID;
 
 import com.arpankundu.journalApp.configuration.JwtAuthenticationFilter;
 import jakarta.servlet.http.Cookie;
@@ -13,6 +14,7 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.stereotype.Service;
 
 import com.arpankundu.journalApp.exceptionHandler.BadCredentialsException;
@@ -104,7 +106,7 @@ public class UserService {
 		throw new BadCredentialsException("Invalid username or password.");
 	}
 
-	private void setCookie(HttpServletResponse response, String name, String value, int maxAge) {
+	public void setCookie(HttpServletResponse response, String name, String value, int maxAge) {
 		Cookie cookie = new Cookie(name, value);
 		cookie.setHttpOnly(true); // Prevent JavaScript access
 		cookie.setSecure(true); // Send only over HTTPS
@@ -114,7 +116,7 @@ public class UserService {
 		response.addCookie(cookie);
 	}
 
-	private void clearCookies(HttpServletResponse response) {
+	public void clearCookies(HttpServletResponse response) {
 		Cookie clearAccessToken = new Cookie("Access-Token", "");
 		clearAccessToken.setMaxAge(0); // Expire immediately
 		clearAccessToken.setHttpOnly(true);
@@ -215,5 +217,14 @@ public class UserService {
 			System.out.println(e.getMessage());
 			return null;
 		}
+	}
+	public Users oauthRegister(OAuth2User users){
+		Users user = new Users();
+		user.setName(users.getAttribute("given_name"));
+		user.setEmail(users.getAttribute("email"));
+		user.setUsername(utilityService.extractUsernameFromEmail(user.getEmail()));
+		user.setPassword(passwordEncoder.encode(UUID.randomUUID().toString()));
+		user.setRole(Role.ROLE_USER);
+		return userRepo.save(user);
 	}
 }

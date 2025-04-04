@@ -1,8 +1,6 @@
 package com.arpankundu.journalApp.configuration;
 
 import java.io.IOException;
-import java.util.Arrays;
-import java.util.Optional;
 
 import jakarta.servlet.http.Cookie;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,33 +26,49 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     JwtService jwtService;
 
     @Autowired
-    MyUserServiceDetails userDetailsService;
+    MyUserServiceDetails userServiceDetails;
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
-        //String authHeader = request.getHeader("Authorization");
-        String token = extractTokenFromCookies(request);
-        System.out.println(token);
-        String username = null;
-        if (token != null) {
-            username = jwtService.extractUsername(token);
-        }
-        System.out.println(username);
-
-        /*if (authHeader != null && authHeader.startsWith("Bearer ")) {
-            token = authHeader.substring(7);
-        }*/
-
-        if (username != null && SecurityContextHolder.getContext().getAuthentication() == null) {
-            UserDetails userDetails = userDetailsService.loadUserByUsername(username);
-            if (jwtService.validateToken(token, userDetails)) {
-                UsernamePasswordAuthenticationToken authToken =
-                        new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
-                authToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
-                SecurityContextHolder.getContext().setAuthentication(authToken);
+        String authHeader = request.getHeader("Authorization");
+        String token=null;
+        String username=null;
+        if(authHeader!=null){
+            if (authHeader.startsWith("Bearer ")) {
+                token = authHeader.substring(7);
+                username=jwtService.extractUsername(token);
             }
+
+            if(username!=null && SecurityContextHolder.getContext().getAuthentication()==null) {
+                UserDetails userDetails=userServiceDetails.loadUserByUsername(username);
+                if(jwtService.validateToken(token,userDetails)) {
+                    UsernamePasswordAuthenticationToken authToken=
+                            new UsernamePasswordAuthenticationToken(userDetails,null,userDetails.getAuthorities());
+                    authToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
+                    SecurityContextHolder.getContext().setAuthentication(authToken);
+                }
+            }
+            filterChain.doFilter(request, response);
+        }else {
+            token = extractTokenFromCookies(request);
+            System.out.println(token);
+            if (token != null) {
+                username = jwtService.extractUsername(token);
+            }
+            System.out.println(username);
+
+
+            if (username != null && SecurityContextHolder.getContext().getAuthentication() == null) {
+                UserDetails userDetails = userServiceDetails.loadUserByUsername(username);
+                if (jwtService.validateToken(token, userDetails)) {
+                    UsernamePasswordAuthenticationToken authToken =
+                            new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
+                    authToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
+                    SecurityContextHolder.getContext().setAuthentication(authToken);
+                }
+            }
+            filterChain.doFilter(request, response);
         }
-        filterChain.doFilter(request, response);
     }
 
 
@@ -119,7 +133,8 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         String path = request.getRequestURI();
         return path.startsWith("/user/login") || path.startsWith("/user/register")
                 || path.startsWith("/user/login-with-otp") || path.startsWith("/user/verify-otp-login")
-                || path.startsWith("/user/forgot-password") || path.startsWith("/user//forgotPassword-otp-verification")
-                || path.startsWith("/user//forgotPassword-set-password") || path.startsWith("/user//refresh-button");
+                || path.startsWith("/user/forgot-password") || path.startsWith("/user/forgotPassword-otp-verification")
+                || path.startsWith("/user/forgotPassword-set-password") || path.startsWith("/user/refresh-button")
+                || path.startsWith("/oauth2/login");
     }
 }

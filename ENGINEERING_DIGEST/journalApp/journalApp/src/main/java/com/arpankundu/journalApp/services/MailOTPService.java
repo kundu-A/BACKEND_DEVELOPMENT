@@ -28,7 +28,6 @@ public class MailOTPService {
 	Set<String> verifiedEmails = Collections.newSetFromMap(new ConcurrentHashMap<>());
 	private Map<String, Integer> otpAttempts = new ConcurrentHashMap<>();
 
-
 	public String generateOTP(String toEmail) {
 		try {
 		 	Random random = new Random();

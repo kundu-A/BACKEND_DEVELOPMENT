@@ -17,6 +17,10 @@ public class JournalServices {
 	@Autowired
 	private JournalAppRepo journalAppRepo;
 
+	public List<JournalEntry> getAllData(){
+		return journalAppRepo.findAll();
+	}
+
 	public List<JournalEntry> getEntry(Users user) {
 		return journalAppRepo.findByUsers(user);
 	}

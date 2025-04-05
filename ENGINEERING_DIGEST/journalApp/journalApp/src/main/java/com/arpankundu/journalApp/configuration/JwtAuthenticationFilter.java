@@ -135,6 +135,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                 || path.startsWith("/user/login-with-otp") || path.startsWith("/user/verify-otp-login")
                 || path.startsWith("/user/forgot-password") || path.startsWith("/user/forgotPassword-otp-verification")
                 || path.startsWith("/user/forgotPassword-set-password") || path.startsWith("/user/refresh-button")
-                || path.startsWith("/oauth2/login");
+                || path.startsWith("/oauth2/login") || path.startsWith("/user/reload-journal-entry")
+                || path.startsWith("/user/get-reloaded-data");
     }
 }

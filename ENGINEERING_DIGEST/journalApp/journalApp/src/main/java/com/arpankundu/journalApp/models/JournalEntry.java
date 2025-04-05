@@ -24,19 +24,26 @@ public class JournalEntry {
 	private Integer id;
 	
 	@NotBlank(message="Journal Title Cant' be Null")
-	@Column(name="journal_title",nullable=false)
+	@Column(name="journal_title",nullable=false,columnDefinition = "TEXT")
 	private String title;
 	
 	@NotBlank(message="Journal Title Cant' be Null")
-	@Column(name="journal_content")
+	@Column(name="journal_content",nullable=false,columnDefinition = "TEXT")
 	private String content;
+
+	@NotBlank(message = "Please mention the category name")
+	@Column(name="category",nullable=false,columnDefinition = "TEXT")
+	private String category;
 	
 	@Column(name="shared_by")
 	private String sharedBy;
 	
 	@Column(name="uploaded_date")
 	private LocalDate date;
-	
+
+	@Column(name="modified_date")
+	private LocalDate modifiedDate;
+
 	@ManyToOne
 	@JoinColumn(name="user_id",nullable=false)
 	@JsonIgnore
@@ -77,5 +84,17 @@ public class JournalEntry {
 	}
 	public void setContent(String content) {
 		this.content = content;
+	}
+	public String getCategory() {
+		return category;
+	}
+	public void setCategory(String category) {
+		this.category = category;
+	}
+	public LocalDate getModifiedDate() {
+		return modifiedDate;
+	}
+	public void setModifiedDate(LocalDate modifiedDate) {
+		this.modifiedDate = modifiedDate;
 	}
 }

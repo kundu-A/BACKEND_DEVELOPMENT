@@ -30,6 +30,7 @@ public class JournalServices {
 			journalEntry.setUsers(user);
 			journalEntry.setSharedBy(user.getName());
 			journalEntry.setDate(LocalDate.now());
+			journalEntry.setModifiedDate(LocalDate.now());
 			journalAppRepo.save(journalEntry);
 			return true;
 		}catch(Exception e) {
@@ -61,6 +62,7 @@ public class JournalServices {
 		if(element!=null) {
 			element.setContent(journalEntry.getContent());
 			element.setTitle(journalEntry.getTitle());
+			element.setModifiedDate(LocalDate.now());
 			try {
 				JournalEntry j=journalAppRepo.save(element);
 				if(j!=null)

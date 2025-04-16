@@ -22,6 +22,9 @@ public class UserService {
     @Autowired
     AuthenticationManager authenticationManager;
 
+    @Autowired
+    JWTService jwtService;
+
     public Users registration(Users users){
         if(!otpService.verifiedPhoneNumber.contains(users.getPhoneNumber())){
             System.out.println("Phone Number verification is needed");
@@ -42,8 +45,13 @@ public class UserService {
         Authentication authentication=new OTPAuthenticationToken(phoneNumber,providedOtp);
         Authentication authResult=authenticationManager.authenticate(authentication);
 
-        if(authResult.isAuthenticated())
-            return "Login successful";
+        String accessToken=null;
+        String refreshToken=null;
+        if(authResult.isAuthenticated()) {
+            accessToken = jwtService.generateAccessToken(phoneNumber);
+            refreshToken= jwtService.generateRefreshToken(phoneNumber);
+            return "Access Token :"+accessToken+"\n"+"Refresh Token :"+refreshToken;
+        }
         return null;
     }
 }

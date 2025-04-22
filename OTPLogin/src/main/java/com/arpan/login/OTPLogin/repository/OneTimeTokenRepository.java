@@ -5,6 +5,6 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public interface TokenRepository extends JpaRepository<OneTimeToken,Integer> {
+public interface OneTimeTokenRepository extends JpaRepository<OneTimeToken,Integer> {
     OneTimeToken findOneTimeTokenByPhoneNumber(String phoneNumber);
 }

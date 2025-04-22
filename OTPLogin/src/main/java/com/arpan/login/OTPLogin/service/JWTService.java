@@ -20,8 +20,6 @@ import java.util.function.Function;
 
 @Service
 public class JWTService {
-    @Autowired
-    UserRepository userRepository;
 
     //Dynamically generate secret key everytime when the server will be started - Self-generated comment
     private String secretKey="";

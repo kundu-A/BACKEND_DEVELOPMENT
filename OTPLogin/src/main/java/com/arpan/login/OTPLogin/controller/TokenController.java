@@ -1,6 +1,6 @@
 package com.arpan.login.OTPLogin.controller;
 
-import com.arpan.login.OTPLogin.DTO.TokenDTO;
+import com.arpan.login.OTPLogin.DTO.OneTimeTokenDTO;
 import com.arpan.login.OTPLogin.service.TokenService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -15,9 +15,9 @@ public class TokenController {
     TokenService tokenService;
 
     @PostMapping("/generate-token")
-    public ResponseEntity<?> sendToken(@RequestBody TokenDTO tokenDTO){
+    public ResponseEntity<?> sendToken(@RequestBody OneTimeTokenDTO oneTimeTokenDTO){
         try{
-            String response=tokenService.generateToken(tokenDTO);
+            String response=tokenService.generateToken(oneTimeTokenDTO);
             if(response!=null)
                 return new ResponseEntity<>(response,HttpStatus.OK);
             return new ResponseEntity<>("Token is not saved successfully",HttpStatus.SERVICE_UNAVAILABLE);
@@ -28,9 +28,9 @@ public class TokenController {
     }
 
     @PostMapping("/verify-token")
-     public ResponseEntity<?> verifyToken(@RequestBody TokenDTO tokenDTO){
+     public ResponseEntity<?> verifyToken(@RequestBody OneTimeTokenDTO oneTimeTokenDTO){
         try{
-            boolean response = tokenService.verifyToken(tokenDTO);
+            boolean response = tokenService.verifyToken(oneTimeTokenDTO);
             if(response)
                 return new ResponseEntity<>("Verification successful",HttpStatus.OK);
             return new ResponseEntity<>("Verification unsuccessful",HttpStatus.BAD_REQUEST);

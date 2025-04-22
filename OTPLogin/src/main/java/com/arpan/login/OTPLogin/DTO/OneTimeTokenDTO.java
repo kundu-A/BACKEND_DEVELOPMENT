@@ -3,7 +3,7 @@ package com.arpan.login.OTPLogin.DTO;
 import org.springframework.stereotype.Component;
 
 @Component
-public class TokenDTO {
+public class OneTimeTokenDTO {
 
     private String token;
     private String phoneNumber;

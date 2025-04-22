@@ -2,13 +2,17 @@ package com.arpan.login.OTPLogin.service;
 
 import com.arpan.login.OTPLogin.DTO.OTP;
 import com.arpan.login.OTPLogin.models.Role;
+import com.arpan.login.OTPLogin.models.Tokens;
 import com.arpan.login.OTPLogin.models.Users;
+import com.arpan.login.OTPLogin.repository.TokenRepository;
 import com.arpan.login.OTPLogin.repository.UserRepository;
 import com.arpan.login.OTPLogin.security.OTPAuthenticationToken;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
+
+import java.time.LocalDateTime;
 
 @Service
 public class UserService {
@@ -24,6 +28,9 @@ public class UserService {
 
     @Autowired
     JWTService jwtService;
+
+    @Autowired
+    TokenRepository tokenRepository;
 
     public Users registration(Users users){
         if(!otpService.verifiedPhoneNumber.contains(users.getPhoneNumber())){
@@ -42,6 +49,9 @@ public class UserService {
         String phoneNumber=otp.getPhoneNumber();
         String providedOtp=otp.getOtp();
 
+        Users users= userRepository.findUsersByPhoneNumber(phoneNumber);
+        Integer userId=users.getId();
+
         Authentication authentication=new OTPAuthenticationToken(phoneNumber,providedOtp);
         Authentication authResult=authenticationManager.authenticate(authentication);
 
@@ -50,8 +60,30 @@ public class UserService {
         if(authResult.isAuthenticated()) {
             accessToken = jwtService.generateAccessToken(phoneNumber);
             refreshToken= jwtService.generateRefreshToken(phoneNumber);
+            setTokens(accessToken,refreshToken,userId);
             return "Access Token :"+accessToken+"\n"+"Refresh Token :"+refreshToken;
         }
         return null;
+    }
+
+    private void setTokens(String accessToken , String refreshToken , Integer userId){
+        try{
+            Tokens tokens= tokenRepository.findTokensByUserId(userId);
+            if(tokens==null){
+                tokens=new Tokens();
+                tokens.setAccessToken(accessToken);
+                tokens.setRefreshToken(refreshToken);
+                tokens.setUserId(userId);
+                tokens.setExpirationDuration(System.currentTimeMillis()+1*60*60*1000);
+                tokens.setLoggedInAt(LocalDateTime.now());
+                tokenRepository.save(tokens);
+            }
+            tokens.setAccessToken(accessToken);
+            tokens.setRefreshToken(refreshToken);
+            tokens.setLoggedInAt(LocalDateTime.now());
+            tokenRepository.save(tokens);
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+        }
     }
 }

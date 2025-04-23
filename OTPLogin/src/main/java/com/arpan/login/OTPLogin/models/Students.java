@@ -2,7 +2,11 @@ package com.arpan.login.OTPLogin.models;
 
 import jakarta.persistence.*;
 
+import java.util.HashSet;
+import java.util.Set;
+
 @Entity
+@Table(name="students")
 public class Students {
 
     @Id
@@ -19,6 +23,9 @@ public class Students {
     @ManyToOne
     @JoinColumn(name="course_id")
     private Course course;
+
+    @OneToMany(mappedBy = "students",cascade = CascadeType.PERSIST)
+    private Set<SubjectStudent> subjectStudent;
 
     public Integer getId() {
         return id;

@@ -81,6 +81,7 @@ public class UserService {
             tokens.setAccessToken(accessToken);
             tokens.setRefreshToken(refreshToken);
             tokens.setLoggedInAt(LocalDateTime.now());
+            tokens.setExpirationDuration(System.currentTimeMillis()+1*60*60*1000);
             tokenRepository.save(tokens);
         } catch (Exception e) {
             System.out.println(e.getMessage());

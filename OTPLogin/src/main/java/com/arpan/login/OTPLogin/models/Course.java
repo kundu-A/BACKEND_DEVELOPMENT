@@ -3,9 +3,12 @@ package com.arpan.login.OTPLogin.models;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 @Entity
+@Table(name="course")
 public class Course {
 
     @Id
@@ -21,7 +24,10 @@ public class Course {
 
     @JsonIgnore
     @OneToMany(mappedBy = "course",cascade = CascadeType.PERSIST)
-    private List<Students> students;
+    private List<Students> students=new ArrayList<>();
+
+    @OneToMany(mappedBy = "course",cascade = CascadeType.PERSIST)
+    private Set<CourseSubject> courseSubject;
 
     public Integer getId() {
         return id;

@@ -2,11 +2,14 @@ package com.arpan.login.OTPLogin.controller;
 
 import com.arpan.login.OTPLogin.DTO.StudentDTO;
 import com.arpan.login.OTPLogin.models.Students;
+import com.arpan.login.OTPLogin.models.Subjects;
 import com.arpan.login.OTPLogin.service.StudentService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/user")
@@ -33,6 +36,19 @@ public class StudentController {
         try{
             Students students= studentService.getStudentDetails(studentId);
             return new ResponseEntity<>(students,HttpStatus.OK);
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+            return new ResponseEntity<>("Some Internal Issues",HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    @GetMapping("/get-subjectList")
+    public ResponseEntity<?> fetchSubjectListUsingSubjectId(@RequestBody String rollNumber){
+        try{
+            List<Subjects> subjects=studentService.fetchSubjectListUsingStudentRollNumber(rollNumber);
+            if(subjects!=null)
+                return new ResponseEntity<>(subjects,HttpStatus.OK);
+            return new ResponseEntity<>("Subject are not available for this student",HttpStatus.BAD_REQUEST);
         } catch (Exception e) {
             System.out.println(e.getMessage());
             return new ResponseEntity<>("Some Internal Issues",HttpStatus.INTERNAL_SERVER_ERROR);

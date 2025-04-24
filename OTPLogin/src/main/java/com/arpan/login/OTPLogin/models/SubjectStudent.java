@@ -1,5 +1,6 @@
 package com.arpan.login.OTPLogin.models;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 
 @Entity
@@ -11,10 +12,12 @@ public class SubjectStudent {
     @Column(name="subject_student_id")
     private Integer id;
 
+    @JsonIgnore
     @ManyToOne
     @JoinColumn(name="subject_id")
     private Subjects subjects;
 
+    @JsonIgnore
     @ManyToOne
     @JoinColumn(name="student_id")
     private Students students;

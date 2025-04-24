@@ -2,6 +2,7 @@ package com.arpan.login.OTPLogin.controller;
 
 import com.arpan.login.OTPLogin.DTO.SubjectDTO;
 import com.arpan.login.OTPLogin.models.Course;
+import com.arpan.login.OTPLogin.models.Students;
 import com.arpan.login.OTPLogin.models.Subjects;
 import com.arpan.login.OTPLogin.service.SubjectService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -57,6 +58,19 @@ public class SubjectController {
         }catch (Exception e){
             System.out.println(e.getMessage());
             return new ResponseEntity<>("Some Internal Issues", HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    @GetMapping("/get-all-students")
+    public ResponseEntity<?> fetchAllStudents(@RequestBody String subjectName){
+        try{
+            List<Students> students=subjectService.fetchAllStudents(subjectName);
+            if(students!=null)
+                return new ResponseEntity<>(students,HttpStatus.OK);
+            return new ResponseEntity<>("May be this subject is not assigned to any student",HttpStatus.NOT_FOUND);
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+            return new ResponseEntity<>("Some Internal Issues",HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 }

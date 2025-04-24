@@ -1,12 +1,11 @@
 package com.arpan.login.OTPLogin.service;
 
 import com.arpan.login.OTPLogin.DTO.SubjectDTO;
-import com.arpan.login.OTPLogin.models.Course;
-import com.arpan.login.OTPLogin.models.CourseSubject;
-import com.arpan.login.OTPLogin.models.Subjects;
+import com.arpan.login.OTPLogin.models.*;
 import com.arpan.login.OTPLogin.repository.CourseRepository;
 import com.arpan.login.OTPLogin.repository.CourseSubjectRepository;
 import com.arpan.login.OTPLogin.repository.SubjectRepository;
+import com.arpan.login.OTPLogin.repository.SubjectStudentRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -24,6 +23,9 @@ public class SubjectService {
 
     @Autowired
     CourseRepository courseRepository;
+
+    @Autowired
+    SubjectStudentRepository subjectStudentRepository;
 
     public Subjects setSubject(SubjectDTO subjectDTO){
         Course course= courseRepository.findCourseByCourseName(subjectDTO.getCourseName());
@@ -51,5 +53,13 @@ public class SubjectService {
 
     public List<Course> getCourseBySubjectId(Integer subjectId) {
         return subjectRepository.findCourseBySubjectId(subjectId);
+    }
+
+    public List<Students>fetchAllStudents(String subjectName){
+        Subjects subjects=subjectRepository.findSubjectsBySubjectName(subjectName);
+        List<SubjectStudent> subjectStudents=subjectStudentRepository.findAllBySubjectsId(subjects.getId());
+        return subjectStudents.stream()
+                .map(SubjectStudent::getStudents)
+                .toList();
     }
 }

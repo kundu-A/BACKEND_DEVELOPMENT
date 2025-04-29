@@ -8,6 +8,7 @@ import com.arpan.login.OTPLogin.repository.TokenRepository;
 import com.arpan.login.OTPLogin.repository.UserRepository;
 import com.arpan.login.OTPLogin.security.OTPAuthenticationToken;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
@@ -32,17 +33,26 @@ public class UserService {
     @Autowired
     TokenRepository tokenRepository;
 
+    @Autowired
+    RedisTemplate<String , String> redisTemplate;
+
     public Users registration(Users users){
-        if(!otpService.verifiedPhoneNumber.contains(users.getPhoneNumber())){
+        if(!otpService.isPhoneNumberVerified(users.getPhoneNumber())){
             System.out.println("Phone Number verification is needed");
             return null;
         }
         users.setRole(Role.ROLE_USER);
+        otpService.deleteVerificationStatus(users.getPhoneNumber());
         return userRepository.save(users);
     }
 
     public String login(OTP otp,String status){
-        if(!status.equals(otpService.otpStatus.get(otp.getPhoneNumber()))){
+        if(!otpService.isOtpPresent(otp.getPhoneNumber())){
+            System.out.println("OTP is not generated for this Phone Number");
+            return null;
+        }
+
+        if(!otpService.checkingWithStatus(otp.getPhoneNumber(),status)){
             System.out.println("Please generate OTP for Login");
             return null;
         }
@@ -61,6 +71,8 @@ public class UserService {
             accessToken = jwtService.generateAccessToken(phoneNumber);
             refreshToken= jwtService.generateRefreshToken(phoneNumber);
             setTokens(accessToken,refreshToken,userId);
+            otpService.deleteOtp(phoneNumber);
+            otpService.deleteStatus(phoneNumber);
             return "Access Token :"+accessToken+"\n"+"Refresh Token :"+refreshToken;
         }
         return null;

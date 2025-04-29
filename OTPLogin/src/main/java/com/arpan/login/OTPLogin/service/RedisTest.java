@@ -12,7 +12,7 @@ public class RedisTest {
 
     public void redisTest(){
         redisTemplate.opsForValue().set("phoneNumber","123456");
-        String phoneNumber=redisTemplate.opsForValue().get("salary");
+        String phoneNumber=redisTemplate.opsForValue().get("phoneNumber");
         System.out.println(phoneNumber);
     }
 }
